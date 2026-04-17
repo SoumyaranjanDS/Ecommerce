@@ -9,6 +9,7 @@ const connectDB = require("./config/db");
 const PORT = process.env.PORT || 8000;
 
 const authRoutes = require("./routes/authRoutes");
+const productRoutes = require("./routes/productRoutes");
 
 const app = express();
 
@@ -21,6 +22,7 @@ app.get("/", (req, res) => {
 });
 
 app.use("/api/user", authRoutes);
+app.use("/api/product", productRoutes)
 
 const startServer = async () => {
   try {
