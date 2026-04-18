@@ -15,7 +15,17 @@ const handelCreateProduct = async (req, res) => {
 
 const handelGetAllProducts = async (req, res) => {
   try {
-    const products = await Product.find().sort({ createdAt: -1 });
+    const { search, category } = req.query;
+    let query = {};
+
+    if (search) {
+      query.title = { $regex: search, $options: "i" };
+    }
+    if (category) {
+      query.category = category;
+    } 
+
+    const products = await Product.find(query).sort({ createdAt: -1 });
     res.json(products);
   } catch (error) {
     res.status(500).json({ message: "internal server error", error });
