@@ -24,6 +24,22 @@ const Home = () => {
     loadProducts();
   }, [search, category]);
 
+  const addToCart = async (productId) => {
+    const userId = localStorage.getItem("userId");
+    if (!userId) {
+      alert("Please login to add items to cart");
+      return;
+    }
+
+    try {
+      await api.post("/cart/add", { userId, productId });
+      window.dispatchEvent(new Event("cartUpdate"));
+    } catch (error) {
+      console.error(error);
+      alert("Unable to add this product right now");
+    }
+  };
+
   return (
     <div className="theme-page min-h-screen">
       <div className="mx-auto max-w-7xl px-3 py-4 sm:px-5 sm:py-6 lg:px-8">
@@ -51,18 +67,15 @@ const Home = () => {
                 <option key={item} value={item}>
                   {item}
                 </option>
-                ))}
+              ))}
             </select>
           </div>
         </div>
 
         <div className="grid grid-cols-2 gap-x-3 gap-y-4 sm:grid-cols-3 sm:gap-x-4 sm:gap-y-5 lg:grid-cols-4">
           {products.map((product) => (
-            <Link
-              key={product._id}
-              to={`/product/${product._id}`}
-              className="group"
-            >
+            <div key={product._id} className="group">
+              <Link to={`/product/${product._id}`}>
               <div className="overflow-hidden rounded-lg border border-(--border) bg-(--surface) sm:rounded-xl">
                 <img
                   src={product.image}
@@ -78,7 +91,15 @@ const Home = () => {
                   Rs. {product.price}
                 </p>
               </div>
-            </Link>
+              </Link>
+              <button
+                type="button"
+                onClick={() => addToCart(product._id)}
+                className="theme-btn-primary mt-3 w-full rounded-lg px-4 py-2.5 text-sm font-medium"
+              >
+                Add to Cart
+              </button>
+            </div>
           ))}
         </div>
       </div>

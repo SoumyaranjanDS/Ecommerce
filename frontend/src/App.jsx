@@ -1,5 +1,5 @@
 import React from "react";
-import { createBrowserRouter, RouterProvider } from "react-router";
+import { createBrowserRouter, Outlet, RouterProvider } from "react-router";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
@@ -7,35 +7,53 @@ import ProductDetails from "./pages/ProductDetails";
 import AddProduct from "./admin/AddProduct";
 import EditProduct from "./admin/EditProduct";
 import ProductList from "./admin/ProductList";
+import NavBar from "./components/NavBar";
+import Cart from "./pages/Cart";
 
+
+const Layout = ({ children }) => (
+  <>
+    <NavBar />
+    <Outlet />
+  </>
+);
 const router = createBrowserRouter([
   {
-    path: "/",
-    element: <Home />,
-  },
-  {
-    path: "/login",
-    element: <Login />,
-  },
-  {
-    path: "/signup",
-    element: <Signup />,
-  },
-  {
-    path: "/product/:id",
-    element: <ProductDetails />,
-  },
-  {
-    path: "/admin/products",
-    element: <ProductList />,
-  },
-  {
-    path: "/admin/products/edit/:id",
-    element: <EditProduct />,
-  },
-  {
-    path: "/admin/products/add",
-    element: <AddProduct />,
+    element: <Layout />,
+    children: [
+      {
+        path: "/",
+        element: <Home />,
+      },
+      {
+        path: "/login",
+        element: <Login />,
+      },
+      {
+        path: "/signup",
+        element: <Signup />,
+      },
+      {
+        path: "/product/:id",
+        element: <ProductDetails />,
+      },
+      {
+        path: "/admin/products",
+        element: <ProductList />,
+      },
+      {
+        path: "/admin/products/edit/:id",
+        element: <EditProduct />,
+      },
+      {
+        path: "/admin/products/add",
+        element: <AddProduct />,
+      },
+      {
+        path: "/cart",
+        element: <Cart />,
+      }
+    ],
   },
 ]);
 

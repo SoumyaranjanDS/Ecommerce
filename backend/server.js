@@ -10,6 +10,7 @@ const PORT = process.env.PORT || 8000;
 
 const authRoutes = require("./routes/authRoutes");
 const productRoutes = require("./routes/productRoutes");
+const cartRoutes = require("./routes/cartRoutes");
 
 const app = express();
 
@@ -23,6 +24,7 @@ app.get("/", (req, res) => {
 
 app.use("/api/user", authRoutes);
 app.use("/api/product", productRoutes)
+app.use("/api/cart", cartRoutes);
 
 const startServer = async () => {
   try {

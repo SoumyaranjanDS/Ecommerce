@@ -5,18 +5,49 @@ import api from "../api/axios";
 
 const ProductDetails = () => {
   const { id } = useParams();
-
   const [product, setProduct] = useState(null);
+  const [cartMessage, setCartMessage] = useState("");
+  const [cartMessageType, setCartMessageType] = useState("success");
+  const [isAdding, setIsAdding] = useState(false);
 
   const getProductDetails = async () => {
     const response = await api.get(`/product/${id}`);
     setProduct(response.data);
-    console.log(response.data);
   };
 
   useEffect(() => {
     getProductDetails();
-  }, []);
+  }, [id]);
+
+  const handleAddToCart = async () => {
+    const userId = localStorage.getItem("userId");
+
+    if (!userId) {
+      setCartMessageType("error");
+      setCartMessage("Please login to add items to cart.");
+      return;
+    }
+
+    try {
+      setIsAdding(true);
+      setCartMessage("");
+
+      const response = await api.post("/cart/add", {
+        userId,
+        productId: id,
+      });
+
+      window.dispatchEvent(new Event("cartUpdate"));
+      setCartMessageType("success");
+      setCartMessage(response.data?.message || "Product added to cart.");
+    } catch (error) {
+      console.error(error);
+      setCartMessageType("error");
+      setCartMessage("Unable to add this product right now.");
+    } finally {
+      setIsAdding(false);
+    }
+  };
 
   return (
     <div>
@@ -81,10 +112,24 @@ const ProductDetails = () => {
 
                   <button
                     type="button"
+                    onClick={handleAddToCart}
+                    disabled={isAdding}
                     className="theme-btn-primary w-full rounded-xl px-5 py-3 text-sm font-semibold shadow-[0_14px_30px_rgba(37,99,235,0.18)] transition hover:shadow-[0_18px_34px_rgba(37,99,235,0.24)] sm:w-auto"
                   >
-                    Add to cart
+                    {isAdding ? "Adding..." : "Add to cart"}
                   </button>
+
+                  {cartMessage ? (
+                    <p
+                      className={`text-sm font-medium ${
+                        cartMessageType === "error"
+                          ? "text-red-500"
+                          : "text-(--primary)"
+                      }`}
+                    >
+                      {cartMessage}
+                    </p>
+                  ) : null}
                 </div>
               </div>
             </div>

@@ -17,6 +17,7 @@ const Login = () => {
       });
 
       localStorage.setItem("ecom-token", res.data.token);
+      localStorage.setItem("userId", res.data.user.id);
 
       setEmail("");
       setPassword("");
