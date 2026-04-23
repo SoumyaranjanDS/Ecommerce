@@ -65,14 +65,14 @@ const AddProduct = () => {
 
         {/* Alert Messages */}
         {error && (
-          <div className="mb-6 rounded-lg border border-red-200 bg-red-50 p-4">
-            <p className="text-sm font-medium text-red-800">{error}</p>
+          <div className="mb-6 rounded-lg bg-gray-50 p-4 border border-gray-100">
+            <p className="text-sm font-medium text-red-600">{error}</p>
           </div>
         )}
 
         {success && (
-          <div className="mb-6 rounded-lg border border-green-200 bg-green-50 p-4">
-            <p className="text-sm font-medium text-green-800">
+          <div className="mb-6 rounded-lg bg-gray-50 p-4 border border-gray-100">
+            <p className="text-sm font-medium text-black">
               ✓ Product added successfully! Redirecting...
             </p>
           </div>
@@ -85,7 +85,7 @@ const AddProduct = () => {
               {/* Title Field */}
               <div>
                 <label className="block text-sm font-semibold text-(--text) mb-2">
-                  Product Title <span className="text-red-500">*</span>
+                  Product Title <span className="text-red-600">*</span>
                 </label>
                 <input
                   name="title"
@@ -122,7 +122,7 @@ const AddProduct = () => {
               <div className="grid gap-4 sm:grid-cols-2">
                 <div>
                   <label className="block text-sm font-semibold text-(--text) mb-2">
-                    Price <span className="text-red-500">*</span>
+                    Price <span className="text-red-600">*</span>
                   </label>
                   <div className="relative">
                     <span className="absolute left-4 top-3 text-sm font-medium text-(--text-muted)">
@@ -144,7 +144,7 @@ const AddProduct = () => {
 
                 <div>
                   <label className="block text-sm font-semibold text-(--text) mb-2">
-                    Stock <span className="text-red-500">*</span>
+                    Stock <span className="text-red-600">*</span>
                   </label>
                   <input
                     name="stock"
@@ -179,7 +179,7 @@ const AddProduct = () => {
               {/* Image URL Field */}
               <div>
                 <label className="block text-sm font-semibold text-(--text) mb-2">
-                  Image URL <span className="text-red-500">*</span>
+                  Image URL <span className="text-red-600">*</span>
                 </label>
                 <input
                   name="image"

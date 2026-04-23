@@ -9,9 +9,11 @@ import EditProduct from "./admin/EditProduct";
 import ProductList from "./admin/ProductList";
 import NavBar from "./components/NavBar";
 import Cart from "./pages/Cart";
+import Address from "./pages/Address";
+import Payment from "./pages/Payment";
 
 
-const Layout = ({ children }) => (
+const Layout = () => (
   <>
     <NavBar />
     <Outlet />
@@ -52,6 +54,14 @@ const router = createBrowserRouter([
       {
         path: "/cart",
         element: <Cart />,
+      },
+      {
+        path: "/address",
+        element: <Address />,
+      },
+      {
+        path: "/payment",
+        element: <Payment />,
       }
     ],
   },

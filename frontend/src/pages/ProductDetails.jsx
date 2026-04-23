@@ -123,7 +123,7 @@ const ProductDetails = () => {
                     <p
                       className={`text-sm font-medium ${
                         cartMessageType === "error"
-                          ? "text-red-500"
+                          ? "text-red-600"
                           : "text-(--primary)"
                       }`}
                     >

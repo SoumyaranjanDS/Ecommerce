@@ -47,7 +47,7 @@ const NavBar = () => {
   };
 
   return (
-    <nav className="sticky top-0 z-20 border-b border-(--border) bg-(--surface)/95 backdrop-blur">
+    <nav className="sticky top-0 z-20 bg-white border-b border-gray-100">
       <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-5 lg:px-8">
         <Link to="/" className="text-xl font-bold tracking-tight text-(--text)">
           Staky
@@ -60,7 +60,7 @@ const NavBar = () => {
           >
             🛒
             {cartCount > 0 ? (
-              <span className="absolute -right-1 -top-2 flex min-h-5 min-w-5 items-center justify-center rounded-full bg-(--accent) px-1.5 text-[10px] font-semibold text-white shadow-[0_8px_18px_rgba(245,158,11,0.3)]">
+              <span className="absolute -right-1 -top-2 flex min-h-5 min-w-5 items-center justify-center rounded-full bg-black px-1.5 text-[10px] font-semibold text-white">
                 {cartCount}
               </span>
             ) : null}
@@ -82,12 +82,20 @@ const NavBar = () => {
               </Link>
             </>
           ) : (
-            <button
-              className="rounded-lg border border-(--border) bg-(--surface-soft) px-4 py-2 text-sm font-medium text-(--text) transition hover:border-(--accent) hover:text-(--accent)"
-              onClick={handelLogOut}
-            >
-              Logout
-            </button>
+            <>
+              <Link
+                to="/address"
+                className="rounded-lg border border-(--border) bg-(--surface-soft) px-4 py-2 text-sm font-medium text-(--text) transition hover:border-(--primary) hover:text-(--primary)"
+              >
+                Addresses
+              </Link>
+              <button
+                className="rounded-lg border border-(--border) bg-(--surface-soft) px-4 py-2 text-sm font-medium text-(--text) transition hover:border-(--accent) hover:text-(--accent)"
+                onClick={handelLogOut}
+              >
+                Logout
+              </button>
+            </>
           )}
         </div>
       </div>

@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import api from "../api/axios";
 
 const Cart = () => {
   const [cart, setCart] = useState({ products: [] });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const navigate = useNavigate();
 
   const loadCart = async () => {
     const userId = localStorage.getItem("userId");
@@ -114,7 +115,7 @@ const Cart = () => {
         </div>
 
         {error ? (
-          <div className="mb-4 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600">
+          <div className="mb-4 rounded-xl bg-gray-50 px-4 py-3 text-sm font-medium text-red-600 border border-gray-100">
             {error}
           </div>
         ) : null}
@@ -208,7 +209,7 @@ const Cart = () => {
                     <button
                       type="button"
                       onClick={() => removeItem(item.productId?._id)}
-                      className="rounded-lg border border-red-200 px-3 py-2 text-sm font-medium text-red-500 transition hover:bg-red-50"
+                      className="rounded-lg px-3 py-2 text-sm font-medium text-red-600 transition hover:bg-gray-100"
                     >
                       Remove
                     </button>
@@ -235,6 +236,7 @@ const Cart = () => {
               </div>
               <button
                 type="button"
+                onClick={() => navigate('/address')}
                 className="theme-btn-primary mt-5 w-full rounded-xl px-4 py-3 text-sm font-semibold"
               >
                 Proceed to Checkout

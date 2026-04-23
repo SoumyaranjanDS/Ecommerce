@@ -62,7 +62,7 @@ const ProductList = () => {
               Loading products...
             </div>
           ) : error ? (
-            <div className="p-6 text-center text-sm text-red-500">{error}</div>
+            <div className="p-6 text-center text-sm text-red-600 font-medium">{error}</div>
           ) : products.length === 0 ? (
             <div className="p-6 text-center text-sm text-(--text-muted)">
               No products found.

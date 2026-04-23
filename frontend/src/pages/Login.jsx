@@ -46,7 +46,7 @@ const Login = () => {
         </div>
 
         {msg && (
-          <div className="mb-4 rounded-lg bg-green-100 p-4 text-green-700">
+          <div className="mb-4 rounded-lg bg-gray-50 p-4 text-sm font-medium text-black border border-gray-100">
             {msg}
           </div>
         )}
