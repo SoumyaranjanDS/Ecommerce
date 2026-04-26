@@ -15,7 +15,7 @@ const handelCreateProduct = async (req, res) => {
 
 const handelGetAllProducts = async (req, res) => {
   try {
-    const { search, category } = req.query;
+    const { search, category, limit = 10, page = 1 } = req.query;
     let query = {};
 
     if (search) {
@@ -23,10 +23,23 @@ const handelGetAllProducts = async (req, res) => {
     }
     if (category) {
       query.category = category;
-    } 
+    }
 
-    const products = await Product.find(query).sort({ createdAt: -1 });
-    res.json(products);
+    const skip = (page - 1) * limit;
+    
+    const products = await Product.find(query)
+      .sort({ createdAt: -1 })
+      .limit(Number(limit))
+      .skip(Number(skip));
+
+    const totalProducts = await Product.countDocuments(query);
+
+    res.json({
+      products,
+      totalProducts,
+      pages: Math.ceil(totalProducts / limit),
+      currentPage: Number(page),
+    });
   } catch (error) {
     res.status(500).json({ message: "internal server error", error });
   }

@@ -3,10 +3,11 @@ const {
   handelSaveAddress,
   handelGetSavedAddress,
 } = require("../controllers/addressController");
+const { verifyToken } = require("../middleware/auth");
 
 const router = express.Router();
 
-router.post("/save", handelSaveAddress);
-router.get("/get/:userid", handelGetSavedAddress);
+router.post("/save", verifyToken, handelSaveAddress);
+router.get("/get/:userid", verifyToken, handelGetSavedAddress);
 
 module.exports = router

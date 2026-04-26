@@ -44,262 +44,201 @@ const AddProduct = () => {
       }, 1500);
     } catch (error) {
       console.log("Failed to create product", error);
-      setError(error.response?.data?.message || "Failed to create product.");
+      setError(error.response?.data?.message || "Registry entry failed.");
     } finally {
       setIsLoading(false);
     }
   };
 
   return (
-    <div className="theme-page min-h-screen px-4 py-12 sm:px-6 lg:px-8">
-      <div className="mx-auto max-w-4xl">
+    <div className="min-h-screen bg-(--color-background-secondary) py-12 px-6 lg:px-10">
+      <div className="mx-auto max-w-6xl">
+        
+        {/* Navigation */}
+        <button 
+          onClick={() => navigate('/admin/products')}
+          className="mb-12 flex items-center gap-3 text-[10px] font-black uppercase tracking-[0.3em] text-(--color-text-tertiary) hover:text-(--midnight) transition-colors group"
+        >
+          <span className="group-hover:-translate-x-1 transition-transform">←</span> Return to Archive
+        </button>
+
         {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-4xl font-bold text-(--text)">
-            Add New Product
-          </h1>
-          <p className="theme-text-muted mt-3 text-lg">
-            Fill in the product details below to add a new item to your catalog.
-          </p>
+        <div className="mb-16">
+          <p className="text-[10px] font-black uppercase tracking-[0.4em] text-(--accent-crimson) mb-3">Inventory Registry</p>
+          <h1 className="text-5xl font-bold tracking-tighter text-(--midnight)">Register New Unit</h1>
         </div>
 
-        {/* Alert Messages */}
+        {/* Alerts */}
         {error && (
-          <div className="mb-6 rounded-lg bg-gray-50 p-4 border border-gray-100">
-            <p className="text-sm font-medium text-red-600">{error}</p>
+          <div className="mb-10 p-5 rounded-2xl bg-red-50 border border-red-100 text-red-600 text-[11px] font-bold uppercase tracking-widest text-center animate-fadeIn">
+            {error}
           </div>
         )}
 
         {success && (
-          <div className="mb-6 rounded-lg bg-gray-50 p-4 border border-gray-100">
-            <p className="text-sm font-medium text-black">
-              ✓ Product added successfully! Redirecting...
-            </p>
+          <div className="mb-10 p-5 rounded-2xl bg-emerald-50 border border-emerald-100 text-emerald-600 text-[11px] font-bold uppercase tracking-widest text-center animate-fadeIn">
+            ✓ Unit Logged. Synchronizing registry...
           </div>
         )}
 
-        <div className="grid gap-8 lg:grid-cols-3">
+        <div className="grid gap-16 lg:grid-cols-[1fr_400px]">
           {/* Form */}
-          <form onSubmit={handleSubmit} className="lg:col-span-2">
-            <div className="theme-card space-y-6 rounded-[28px] p-8">
-              {/* Title Field */}
+          <form onSubmit={handleSubmit} className="space-y-12">
+            <div className="bg-white border border-(--color-border-tertiary) rounded-[40px] p-10 shadow-sm space-y-10">
+              
+              {/* Title */}
               <div>
-                <label className="block text-sm font-semibold text-(--text) mb-2">
-                  Product Title <span className="text-red-600">*</span>
+                <label className="block text-[10px] font-black uppercase tracking-[0.2em] text-(--midnight) mb-4 opacity-40 ml-1">
+                  Unit Identity
                 </label>
                 <input
                   name="title"
                   value={form.title}
-                  placeholder="e.g., Premium Wireless Headphones"
+                  placeholder="e.g., ARCHITECTURAL MONOLITH HEADPHONES"
                   onChange={handleChange}
-                  className="theme-input w-full rounded-lg px-4 py-3 transition-all duration-200"
+                  className="w-full bg-(--color-background-secondary) border border-(--color-border-tertiary) rounded-2xl px-6 py-4 text-sm font-bold text-(--midnight) placeholder:opacity-20 focus:border-(--midnight) transition-all outline-none"
                   required
                 />
-                <p className="theme-text-muted mt-1 text-xs">
-                  Give your product a clear, descriptive name
-                </p>
               </div>
 
-              {/* Description Field */}
+              {/* Description */}
               <div>
-                <label className="block text-sm font-semibold text-(--text) mb-2">
-                  Description
+                <label className="block text-[10px] font-black uppercase tracking-[0.2em] text-(--midnight) mb-4 opacity-40 ml-1">
+                  Technical Specifications & Narrative
                 </label>
                 <textarea
                   name="description"
                   value={form.description}
-                  placeholder="Describe your product features, benefits, and specifications..."
+                  placeholder="Elaborate on technical prowess and design philosophy..."
                   onChange={handleChange}
-                  className="theme-input w-full rounded-lg px-4 py-3 transition-all duration-200 resize-none"
-                  rows="5"
+                  className="w-full bg-(--color-background-secondary) border border-(--color-border-tertiary) rounded-2xl px-6 py-4 text-sm font-bold text-(--midnight) placeholder:opacity-20 focus:border-(--midnight) transition-all outline-none min-h-[200px] resize-none"
                 />
-                <p className="theme-text-muted mt-1 text-xs">
-                  Detailed descriptions help customers make informed decisions
-                </p>
               </div>
 
-              {/* Price and Stock Row */}
-              <div className="grid gap-4 sm:grid-cols-2">
+              {/* Price & Stock */}
+              <div className="grid gap-6 sm:grid-cols-2">
                 <div>
-                  <label className="block text-sm font-semibold text-(--text) mb-2">
-                    Price <span className="text-red-600">*</span>
+                  <label className="block text-[10px] font-black uppercase tracking-[0.2em] text-(--midnight) mb-4 opacity-40 ml-1">
+                    Settlement Value
                   </label>
                   <div className="relative">
-                    <span className="absolute left-4 top-3 text-sm font-medium text-(--text-muted)">
-                      $
-                    </span>
+                    <span className="absolute left-6 top-1/2 -translate-y-1/2 text-xs font-bold text-(--midnight) opacity-40">₹</span>
                     <input
                       name="price"
                       type="number"
-                      min="0"
-                      step="0.01"
                       value={form.price}
                       placeholder="0.00"
                       onChange={handleChange}
-                      className="theme-input w-full rounded-lg py-3 pl-8 pr-4 transition-all duration-200"
+                      className="w-full bg-(--color-background-secondary) border border-(--color-border-tertiary) rounded-2xl py-4 pl-12 pr-6 text-sm font-bold text-(--midnight) placeholder:opacity-20 focus:border-(--midnight) transition-all outline-none"
                       required
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-semibold text-(--text) mb-2">
-                    Stock <span className="text-red-600">*</span>
+                  <label className="block text-[10px] font-black uppercase tracking-[0.2em] text-(--midnight) mb-4 opacity-40 ml-1">
+                    Initial Inventory Index
                   </label>
                   <input
                     name="stock"
                     type="number"
-                    min="0"
                     value={form.stock}
                     placeholder="0"
                     onChange={handleChange}
-                    className="theme-input w-full rounded-lg px-4 py-3 transition-all duration-200"
+                    className="w-full bg-(--color-background-secondary) border border-(--color-border-tertiary) rounded-2xl px-6 py-4 text-sm font-bold text-(--midnight) placeholder:opacity-20 focus:border-(--midnight) transition-all outline-none"
                     required
                   />
                 </div>
               </div>
 
-              {/* Category Field */}
+              {/* Category */}
               <div>
-                <label className="block text-sm font-semibold text-(--text) mb-2">
-                  Category
+                <label className="block text-[10px] font-black uppercase tracking-[0.2em] text-(--midnight) mb-4 opacity-40 ml-1">
+                  Registry Category
                 </label>
                 <input
                   name="category"
                   value={form.category}
-                  placeholder="e.g., Electronics, Fashion, Home & Garden"
+                  placeholder="e.g., ACOUSTIC ENGINEERING"
                   onChange={handleChange}
-                  className="theme-input w-full rounded-lg px-4 py-3 transition-all duration-200"
+                  className="w-full bg-(--color-background-secondary) border border-(--color-border-tertiary) rounded-2xl px-6 py-4 text-sm font-bold text-(--midnight) placeholder:opacity-20 focus:border-(--midnight) transition-all outline-none"
                 />
-                <p className="theme-text-muted mt-1 text-xs">
-                  Categorize your product for better organization
-                </p>
               </div>
 
-              {/* Image URL Field */}
+              {/* Image URL */}
               <div>
-                <label className="block text-sm font-semibold text-(--text) mb-2">
-                  Image URL <span className="text-red-600">*</span>
+                <label className="block text-[10px] font-black uppercase tracking-[0.2em] text-(--midnight) mb-4 opacity-40 ml-1">
+                  Visual Asset Link
                 </label>
                 <input
                   name="image"
                   value={form.image}
-                  placeholder="https://example.com/image.jpg"
+                  placeholder="https://assets.curation.com/asset-01.jpg"
                   onChange={handleChange}
-                  className="theme-input w-full rounded-lg px-4 py-3 transition-all duration-200"
+                  className="w-full bg-(--color-background-secondary) border border-(--color-border-tertiary) rounded-2xl px-6 py-4 text-sm font-bold text-(--midnight) placeholder:opacity-20 focus:border-(--midnight) transition-all outline-none"
                   required
                 />
-                <p className="theme-text-muted mt-1 text-xs">
-                  Paste a direct link to your product image (JPG, PNG, etc.)
-                </p>
               </div>
 
-              {/* Submit Button */}
+              {/* Submit */}
               <button
                 type="submit"
                 disabled={isLoading || success}
-                className="theme-btn-primary w-full rounded-lg px-6 py-3 font-semibold transition-all duration-200 disabled:opacity-75"
+                className="w-full h-16 bg-(--midnight) text-white rounded-2xl text-[11px] font-black uppercase tracking-[0.3em] shadow-2xl shadow-black/20 transition-all hover:opacity-90 active:scale-[0.98] disabled:opacity-50"
               >
-                {isLoading ? "Adding Product..." : success ? "✓ Product Added" : "Add Product"}
+                {isLoading ? "Synchronizing..." : success ? "Unit Registered" : "Execute Registration"}
               </button>
             </div>
           </form>
 
-          {/* Image Preview */}
-          <div className="lg:col-span-1">
-            <div className="sticky top-6">
-              <div className="theme-card rounded-[28px] p-6">
-                <h3 className="mb-4 text-sm font-semibold text-(--text)">
-                  Image Preview
-                </h3>
-                <div className="relative overflow-hidden rounded-lg bg-gradient-to-br from-slate-100 to-slate-200">
-                  {form.image ? (
-                    <>
-                      <img
-                        src={form.image}
-                        alt="Product preview"
-                        className="aspect-square w-full object-cover"
-                        onError={(e) => {
-                          e.target.style.display = "none";
-                        }}
-                        onLoad={(e) => {
-                          e.target.style.display = "block";
-                        }}
-                      />
-                      <div
-                        className="flex aspect-square w-full items-center justify-center text-center"
-                        style={{
-                          display: !form.image ? "flex" : "none",
-                        }}
-                      >
-                        <div>
-                          <p className="text-sm text-(--text-muted)">
-                            Invalid image URL
-                          </p>
-                        </div>
-                      </div>
-                    </>
-                  ) : (
-                    <div className="flex aspect-square w-full items-center justify-center">
-                      <div className="text-center">
-                        <div className="mb-2 text-2xl">🖼️</div>
-                        <p className="text-sm text-(--text-muted)">
-                          Add an image URL to preview
-                        </p>
-                      </div>
-                    </div>
-                  )}
+          {/* Visual Preview */}
+          <div className="sticky top-32">
+            <div className="bg-white border border-(--color-border-tertiary) rounded-[40px] p-8 shadow-sm">
+              <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-(--midnight) mb-8 opacity-40 ml-1">
+                Registry Preview
+              </h3>
+              
+              <div className="aspect-square w-full rounded-[32px] overflow-hidden bg-(--color-background-secondary) border border-(--color-border-tertiary) relative group">
+                {form.image ? (
+                  <img
+                    src={form.image}
+                    alt=""
+                    className="h-full w-full object-cover grayscale opacity-80 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-1000"
+                    onError={(e) => (e.target.style.display = "none")}
+                  />
+                ) : (
+                  <div className="h-full w-full flex items-center justify-center">
+                    <span className="text-4xl opacity-10">🖼️</span>
+                  </div>
+                )}
+              </div>
+
+              <div className="mt-10 space-y-8">
+                <div>
+                  <p className="text-[9px] font-black text-(--color-text-tertiary) uppercase tracking-widest mb-1">Identity</p>
+                  <p className="text-lg font-bold text-(--midnight) leading-tight">{form.title || "Pending Registry"}</p>
+                </div>
+                
+                <div className="grid grid-cols-2 gap-8 pt-8 border-t border-(--color-border-tertiary)">
+                  <div>
+                    <p className="text-[9px] font-black text-(--color-text-tertiary) uppercase tracking-widest mb-1">Settlement</p>
+                    <p className="text-sm font-bold text-(--midnight)">₹{form.price ? Number(form.price).toLocaleString() : "0"}</p>
+                  </div>
+                  <div>
+                    <p className="text-[9px] font-black text-(--color-text-tertiary) uppercase tracking-widest mb-1">Inventory</p>
+                    <p className="text-sm font-bold text-(--midnight)">{form.stock || "0"} UNITS</p>
+                  </div>
                 </div>
 
-                {/* Product Summary */}
-                <div className="mt-6 space-y-4 border-t border-slate-200 pt-6">
-                  <h4 className="text-sm font-semibold text-(--text)">Summary</h4>
-
-                  {form.title && (
-                    <div>
-                      <p className="text-xs text-(--text-muted)">Title</p>
-                      <p className="text-sm font-medium text-(--text) truncate">
-                        {form.title}
-                      </p>
-                    </div>
-                  )}
-
-                  {form.price && (
-                    <div>
-                      <p className="text-xs text-(--text-muted)">Price</p>
-                      <p className="text-sm font-medium text-(--text)">
-                        ${Number(form.price).toFixed(2)}
-                      </p>
-                    </div>
-                  )}
-
-                  {form.stock && (
-                    <div>
-                      <p className="text-xs text-(--text-muted)">In Stock</p>
-                      <p className="text-sm font-medium text-(--text)">
-                        {form.stock} units
-                      </p>
-                    </div>
-                  )}
-
-                  {form.category && (
-                    <div>
-                      <p className="text-xs text-(--text-muted)">Category</p>
-                      <p className="text-sm font-medium text-(--text)">
-                        {form.category}
-                      </p>
-                    </div>
-                  )}
-
-                  {!form.title &&
-                    !form.price &&
-                    !form.stock &&
-                    !form.category && (
-                      <p className="text-xs italic text-(--text-muted)">
-                        Fill in the form to see a preview
-                      </p>
-                    )}
+                <div>
+                  <p className="text-[9px] font-black text-(--color-text-tertiary) uppercase tracking-widest mb-1">Classification</p>
+                  <p className="text-xs font-bold text-(--midnight) uppercase tracking-wider">{form.category || "UNCLASSIFIED"}</p>
                 </div>
+              </div>
+
+              <div className="mt-10 pt-8 border-t border-(--color-border-tertiary) flex items-center gap-3 opacity-20">
+                 <div className="h-1.5 w-1.5 rounded-full bg-(--midnight)"></div>
+                 <p className="text-[8px] font-bold uppercase tracking-[0.4em]">Administrative Preview Mode</p>
               </div>
             </div>
           </div>

@@ -14,6 +14,31 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  role: {
+    type: String,
+    enum: ["user", "admin"],
+    default: "user",
+  },
+  wishlist: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "product",
+  }],
+  loyaltyPoints: {
+    type: Number,
+    default: 0,
+  },
+  loyaltyTier: {
+    type: String,
+    enum: ["bronze", "silver", "gold", "platinum"],
+    default: "bronze",
+  },
+  referralCode: {
+    type: String,
+    unique: true,
+  },
+  referredBy: {
+    type: String,
+  },
 }, { timestamps: true });
 
 const User = mongoose.model("User", userSchema);

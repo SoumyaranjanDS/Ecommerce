@@ -8,16 +8,24 @@ import AddProduct from "./admin/AddProduct";
 import EditProduct from "./admin/EditProduct";
 import ProductList from "./admin/ProductList";
 import NavBar from "./components/NavBar";
+import Footer from "./components/Footer";
 import Cart from "./pages/Cart";
 import Address from "./pages/Address";
 import Payment from "./pages/Payment";
-
+import Profile from "./pages/Profile";
+import UserDashboard from "./pages/UserDashboard";
+import Wishlist from "./pages/Wishlist";
+import OrderDetails from "./pages/OrderDetails";
+import Dashboard from "./admin/Dashboard";
 
 const Layout = () => (
-  <>
+  <div className="flex flex-col min-h-screen">
     <NavBar />
-    <Outlet />
-  </>
+    <main className="flex-1">
+      <Outlet />
+    </main>
+    <Footer />
+  </div>
 );
 const router = createBrowserRouter([
   {
@@ -40,6 +48,26 @@ const router = createBrowserRouter([
         element: <ProductDetails />,
       },
       {
+        path: "/profile",
+        element: <Profile />,
+      },
+      {
+        path: "/dashboard",
+        element: <UserDashboard />,
+      },
+      {
+        path: "/wishlist",
+        element: <Wishlist />,
+      },
+      {
+        path: "/order-details/:id",
+        element: <OrderDetails />,
+      },
+      {
+        path: "/admin/dashboard",
+        element: <Dashboard />,
+      },
+      {
         path: "/admin/products",
         element: <ProductList />,
       },
@@ -48,7 +76,7 @@ const router = createBrowserRouter([
         element: <EditProduct />,
       },
       {
-        path: "/admin/products/add",
+        path: "/admin/add-product",
         element: <AddProduct />,
       },
       {
@@ -66,6 +94,7 @@ const router = createBrowserRouter([
     ],
   },
 ]);
+
 
 const App = () => {
   return <RouterProvider router={router} />;

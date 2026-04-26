@@ -29,10 +29,10 @@ const Address = () => {
     const fetchAddresses = async () => {
       try {
         const res = await api.get(`/user/address/get/${userId}`);
-        setAddresses(res.data);
+        setAddresses(res.data || []);
       } catch (err) {
         console.error("Failed to fetch addresses:", err);
-        setError("Failed to load addresses.");
+        setError("Unable to load shipping locations.");
       } finally {
         setLoading(false);
       }
@@ -56,10 +56,9 @@ const Address = () => {
         ...formData,
       });
 
-      setSuccessMsg(res.data.message || "Address saved successfully");
+      setSuccessMsg(res.data.message || "Location registry updated");
       setAddresses([...addresses, res.data.address]);
       
-      // Reset form
       setFormData({
         fullname: "",
         phone: "",
@@ -70,74 +69,91 @@ const Address = () => {
       });
     } catch (err) {
       console.error("Failed to save address:", err);
-      setError(err.response?.data?.error || "Failed to save address");
+      setError(err.response?.data?.error || "Registry update failed");
     }
   };
 
   if (!userId) return null;
 
-  return (
-    <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-      <h1 className="mb-8 text-3xl font-bold tracking-tight">Your Addresses</h1>
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-(--color-background-primary)">
+        <div className="h-10 w-10 animate-spin rounded-full border-2 border-(--midnight) border-t-transparent"></div>
+      </div>
+    );
+  }
 
-      <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
-        {/* Saved Addresses List */}
-        <div>
-          <h2 className="mb-4 text-xl font-semibold">Saved Addresses</h2>
-          {loading ? (
-            <p>Loading addresses...</p>
-          ) : addresses.length > 0 ? (
-            <div className="space-y-4">
-              {addresses.map((addr) => (
-                <div
-                  key={addr._id}
-                  className="theme-card rounded-2xl p-5 border border-(--border)"
-                >
-                  <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-4">
-                    <div className="min-w-0">
-                      <p className="font-semibold text-lg">{addr.fullname}</p>
-                      <p className="text-(--text-muted) mt-1">{addr.phone}</p>
-                      <p className="mt-2 break-words">{addr.adressLine}</p>
-                      <p className="break-words">
-                        {addr.city}, {addr.state} - {addr.pincode}
-                      </p>
-                    </div>
-                    <button
-                      onClick={() => navigate('/payment', { state: { selectedAddress: addr } })}
-                      className="theme-btn-primary w-full sm:w-auto whitespace-nowrap rounded-lg px-4 py-2 text-sm font-semibold"
-                    >
-                      Use this Address
-                    </button>
-                  </div>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <p className="text-(--text-muted)">No saved addresses found.</p>
-          )}
+  return (
+    <div className="min-h-screen bg-(--color-background-secondary) py-12 px-6 lg:px-10">
+      <div className="mx-auto max-w-6xl">
+        
+        {/* Header */}
+        <div className="mb-16">
+          <p className="text-[10px] font-black uppercase tracking-[0.4em] text-(--color-text-tertiary) mb-2">Shipping Logistics</p>
+          <div className="flex items-end justify-between">
+            <h1 className="text-4xl font-bold tracking-tight text-(--midnight)">Address Registry</h1>
+            <p className="text-sm font-medium text-(--color-text-secondary)">
+              Manage your delivery destinations.
+            </p>
+          </div>
         </div>
 
-        {/* Add New Address Form */}
-        <div>
-          <h2 className="mb-4 text-xl font-semibold">Add New Address</h2>
-          <form
-            onSubmit={handleSubmit}
-            className="theme-card rounded-[28px] p-6 sm:p-8"
-          >
-            {error && (
-              <div className="mb-4 rounded-lg bg-gray-50 p-4 text-sm font-medium text-red-600 border border-gray-100">
-                {error}
-              </div>
-            )}
-            {successMsg && (
-              <div className="mb-4 rounded-lg bg-gray-50 p-4 text-sm font-medium text-black border border-gray-100">
-                {successMsg}
-              </div>
-            )}
+        {(error || successMsg) && (
+          <div className={`mb-10 p-5 rounded-2xl border flex items-center gap-4 animate-fadeIn ${
+            error ? "bg-red-50 border-red-100 text-red-600" : "bg-emerald-50 border-emerald-100 text-emerald-600"
+          }`}>
+            <span className="text-lg">{error ? "⚠️" : "✨"}</span>
+            <p className="text-[11px] font-bold uppercase tracking-widest">{error || successMsg}</p>
+          </div>
+        )}
 
-            <div className="space-y-5">
-              <div>
-                <label className="mb-2 block text-sm font-bold">Full Name</label>
+        <div className="grid gap-12 lg:grid-cols-[1fr_450px] items-start">
+          
+          {/* Saved Addresses Column */}
+          <div className="space-y-8">
+            <h2 className="text-[11px] font-black uppercase tracking-widest text-(--midnight) opacity-40">Stored Locations</h2>
+            {addresses.length > 0 ? (
+              <div className="grid gap-6">
+                {addresses.map((addr) => (
+                  <div
+                    key={addr._id}
+                    className="bg-white border border-(--color-border-tertiary) rounded-2xl p-8 shadow-sm hover:border-(--color-border-primary) transition-all group"
+                  >
+                    <div className="flex flex-col sm:flex-row justify-between gap-8">
+                      <div className="space-y-4">
+                        <div>
+                          <p className="text-lg font-bold text-(--midnight)">{addr.fullname}</p>
+                          <p className="text-xs font-medium text-(--color-text-tertiary) mt-1">{addr.phone}</p>
+                        </div>
+                        <div className="space-y-1">
+                          <p className="text-sm text-(--color-text-secondary) leading-relaxed">{addr.adressLine}</p>
+                          <p className="text-sm font-bold text-(--midnight)">{addr.city}, {addr.state} — {addr.pincode}</p>
+                        </div>
+                      </div>
+                      <button
+                        onClick={() => navigate('/payment', { state: { selectedAddress: addr } })}
+                        className="h-14 px-8 bg-(--midnight) text-white rounded-xl text-[10px] font-black uppercase tracking-[0.2em] shadow-xl shadow-black/5 transition-all hover:opacity-90 active:scale-95"
+                      >
+                        Ship Here
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="bg-white border border-dashed border-(--color-border-tertiary) rounded-3xl p-20 text-center">
+                <p className="text-3xl mb-4">📍</p>
+                <p className="text-sm font-medium text-(--color-text-tertiary)">No shipping locations registered yet.</p>
+              </div>
+            )}
+          </div>
+
+          {/* New Address Form Column */}
+          <div className="bg-white border border-(--color-border-tertiary) rounded-3xl p-10 shadow-sm sticky top-32">
+            <h2 className="text-[11px] font-black uppercase tracking-widest text-(--midnight) mb-10">Register New Destination</h2>
+            <form onSubmit={handleSubmit} className="space-y-6">
+              <div className="space-y-2">
+                <label className="text-[10px] font-black uppercase tracking-widest text-(--color-text-tertiary) ml-1">Full Identity</label>
                 <input
                   type="text"
                   name="fullname"
@@ -145,84 +161,85 @@ const Address = () => {
                   value={formData.fullname}
                   onChange={handleChange}
                   placeholder="John Doe"
-                  className="theme-input w-full appearance-none rounded-full px-4 py-3 text-sm"
+                  className="w-full bg-(--color-background-secondary) border border-(--color-border-tertiary) rounded-xl px-5 py-3.5 text-xs font-bold focus:outline-none focus:border-(--midnight) transition-all"
                 />
               </div>
 
-              <div>
-                <label className="mb-2 block text-sm font-bold">Phone Number</label>
+              <div className="space-y-2">
+                <label className="text-[10px] font-black uppercase tracking-widest text-(--color-text-tertiary) ml-1">Contact Dial</label>
                 <input
                   type="text"
                   name="phone"
                   required
                   value={formData.phone}
                   onChange={handleChange}
-                  placeholder="+1 234 567 8900"
-                  className="theme-input w-full appearance-none rounded-full px-4 py-3 text-sm"
+                  placeholder="+91 00000 00000"
+                  className="w-full bg-(--color-background-secondary) border border-(--color-border-tertiary) rounded-xl px-5 py-3.5 text-xs font-bold focus:outline-none focus:border-(--midnight) transition-all"
                 />
               </div>
 
-              <div>
-                <label className="mb-2 block text-sm font-bold">Address Line</label>
+              <div className="space-y-2">
+                <label className="text-[10px] font-black uppercase tracking-widest text-(--color-text-tertiary) ml-1">Logistic Path (Address)</label>
                 <input
                   type="text"
                   name="adressLine"
                   required
                   value={formData.adressLine}
                   onChange={handleChange}
-                  placeholder="123 Main St, Apt 4B"
-                  className="theme-input w-full appearance-none rounded-full px-4 py-3 text-sm"
+                  placeholder="Street, Building, Flat"
+                  className="w-full bg-(--color-background-secondary) border border-(--color-border-tertiary) rounded-xl px-5 py-3.5 text-xs font-bold focus:outline-none focus:border-(--midnight) transition-all"
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="mb-2 block text-sm font-bold">City</label>
+                <div className="space-y-2">
+                  <label className="text-[10px] font-black uppercase tracking-widest text-(--color-text-tertiary) ml-1">City Hub</label>
                   <input
                     type="text"
                     name="city"
                     required
                     value={formData.city}
                     onChange={handleChange}
-                    placeholder="New York"
-                    className="theme-input w-full appearance-none rounded-full px-4 py-3 text-sm"
+                    placeholder="New Delhi"
+                    className="w-full bg-(--color-background-secondary) border border-(--color-border-tertiary) rounded-xl px-5 py-3.5 text-xs font-bold focus:outline-none focus:border-(--midnight) transition-all"
                   />
                 </div>
-                <div>
-                  <label className="mb-2 block text-sm font-bold">State</label>
+                <div className="space-y-2">
+                  <label className="text-[10px] font-black uppercase tracking-widest text-(--color-text-tertiary) ml-1">State Province</label>
                   <input
                     type="text"
                     name="state"
                     required
                     value={formData.state}
                     onChange={handleChange}
-                    placeholder="NY"
-                    className="theme-input w-full appearance-none rounded-full px-4 py-3 text-sm"
+                    placeholder="Delhi"
+                    className="w-full bg-(--color-background-secondary) border border-(--color-border-tertiary) rounded-xl px-5 py-3.5 text-xs font-bold focus:outline-none focus:border-(--midnight) transition-all"
                   />
                 </div>
               </div>
 
-              <div>
-                <label className="mb-2 block text-sm font-bold">Pincode</label>
+              <div className="space-y-2">
+                <label className="text-[10px] font-black uppercase tracking-widest text-(--color-text-tertiary) ml-1">Logistic Index (Pincode)</label>
                 <input
                   type="text"
                   name="pincode"
                   required
                   value={formData.pincode}
                   onChange={handleChange}
-                  placeholder="10001"
-                  className="theme-input w-full appearance-none rounded-full px-4 py-3 text-sm"
+                  placeholder="000 000"
+                  className="w-full bg-(--color-background-secondary) border border-(--color-border-tertiary) rounded-xl px-5 py-3.5 text-xs font-bold focus:outline-none focus:border-(--midnight) transition-all"
                 />
               </div>
-            </div>
 
-            <button
-              type="submit"
-              className="theme-btn-primary mt-6 w-full rounded-2xl px-4 py-3"
-            >
-              Save Address
-            </button>
-          </form>
+              <button
+                type="submit"
+                className="w-full bg-(--midnight) text-white py-4 rounded-xl text-[11px] font-black uppercase tracking-[0.2em] shadow-xl shadow-black/10 transition-all hover:opacity-95 active:scale-[0.98] mt-4"
+              >
+                Register Location
+              </button>
+            </form>
+          </div>
+
         </div>
       </div>
     </div>

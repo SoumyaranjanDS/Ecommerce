@@ -5,12 +5,13 @@ const {
   handelUpdateCart,
   handelGetCartByUserId,
 } = require("../controllers/cartController");
+const { verifyToken } = require("../middleware/auth");
 
 const router = express.Router();
 
-router.post("/add", handelAddToCart);
-router.post("/remove", handelRemoveFromCart);
-router.post("/update", handelUpdateCart);
-router.get("/:userId", handelGetCartByUserId);
+router.post("/add", verifyToken, handelAddToCart);
+router.post("/remove", verifyToken, handelRemoveFromCart);
+router.post("/update", verifyToken, handelUpdateCart);
+router.get("/:userId", verifyToken, handelGetCartByUserId);
 
 module.exports = router;

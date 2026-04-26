@@ -14,20 +14,20 @@ const ProductList = () => {
       const response = await api.get("/product");
       setProducts(Array.isArray(response.data) ? response.data : []);
     } catch (err) {
-      setError(err.response?.data?.message || "Failed to load products.");
+      setError("Inventory retrieval failed.");
     } finally {
       setLoading(false);
     }
   };
 
   const deleteProduct = async (id) => {
+    if (!window.confirm("Permanently purge this unit from inventory?")) return;
     try {
       await api.delete(`/product/delete/${id}`);
-      alert("Product deleted successfully!");
       await loadProducts();
     } catch (err) {
       console.log("Error deleting product", err);
-      setError(err.response?.data?.message || "Failed to delete product.");
+      setError("Unit purge failed.");
     }
   };
 
@@ -35,54 +35,63 @@ const ProductList = () => {
     loadProducts();
   }, []);
 
-  return (
-    <div className="theme-page min-h-screen px-4 py-10 sm:px-6 lg:px-8">
-      <div className="mx-auto max-w-5xl">
-        <div className="theme-card mb-6 flex flex-col gap-4 rounded-[28px] p-6 sm:flex-row sm:items-center sm:justify-between">
-          <div>
-            <h2 className="text-2xl font-bold text-(--text) sm:text-3xl">
-              Product List
-            </h2>
-            <p className="theme-text-muted mt-2 text-sm sm:text-base">
-              Manage your products from one place.
-            </p>
-          </div>
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-(--color-background-primary)">
+        <div className="h-10 w-10 animate-spin rounded-full border-2 border-(--midnight) border-t-transparent"></div>
+      </div>
+    );
+  }
 
+  return (
+    <div className="min-h-screen bg-(--color-background-secondary) py-12 px-6 lg:px-10">
+      <div className="mx-auto max-w-6xl">
+        
+        {/* Header */}
+        <div className="mb-16 flex flex-col md:flex-row md:items-end justify-between gap-8">
+          <div>
+            <p className="text-[10px] font-black uppercase tracking-[0.4em] text-(--accent-crimson) mb-3">Inventory Analytics</p>
+            <h1 className="text-5xl font-bold tracking-tighter text-(--midnight)">Unit Archive</h1>
+          </div>
           <Link
-            to="/admin/products/add"
-            className="theme-btn-primary inline-flex items-center justify-center rounded-full px-5 py-3 font-medium"
+            to="/admin/add-product"
+            className="h-14 px-8 bg-(--midnight) text-white rounded-xl text-[10px] font-black uppercase tracking-[0.2em] shadow-xl shadow-black/10 transition-all hover:opacity-90 flex items-center justify-center"
           >
-            Add New Product
+            Register Unit
           </Link>
         </div>
 
-        <div className="theme-card overflow-hidden rounded-[28px]">
-          {loading ? (
-            <div className="p-6 text-center text-sm text-(--text-muted)">
-              Loading products...
-            </div>
-          ) : error ? (
-            <div className="p-6 text-center text-sm text-red-600 font-medium">{error}</div>
-          ) : products.length === 0 ? (
-            <div className="p-6 text-center text-sm text-(--text-muted)">
-              No products found.
+        {error && (
+          <div className="mb-10 p-5 rounded-2xl bg-red-50 border border-red-100 text-red-600 text-[11px] font-bold uppercase tracking-widest text-center animate-fadeIn">
+            {error}
+          </div>
+        )}
+
+        <div className="bg-white border border-(--color-border-tertiary) rounded-[40px] overflow-hidden shadow-sm">
+          {products.length === 0 ? (
+            <div className="p-24 text-center">
+              <p className="text-3xl mb-6">📦</p>
+              <p className="text-sm font-medium text-(--color-text-tertiary)">The inventory registry is currently empty.</p>
             </div>
           ) : (
             <div className="overflow-x-auto">
-              <table className="w-full min-w-160 border-collapse">
+              <table className="w-full border-collapse">
                 <thead>
-                  <tr className="bg-(--surface-soft) text-left">
-                    <th className="border-b border-(--border) px-5 py-4 text-sm font-semibold text-(--text)">
-                      Title
+                  <tr className="bg-(--color-background-secondary)">
+                    <th className="px-8 py-6 text-[10px] font-black uppercase tracking-widest text-(--color-text-tertiary) text-left border-b border-(--color-border-tertiary)">
+                      Unit Identity
                     </th>
-                    <th className="border-b border-(--border) px-5 py-4 text-sm font-semibold text-(--text)">
-                      Price
+                    <th className="px-8 py-6 text-[10px] font-black uppercase tracking-widest text-(--color-text-tertiary) text-left border-b border-(--color-border-tertiary)">
+                      Category
                     </th>
-                    <th className="border-b border-(--border) px-5 py-4 text-sm font-semibold text-(--text)">
-                      Stock
+                    <th className="px-8 py-6 text-[10px] font-black uppercase tracking-widest text-(--color-text-tertiary) text-left border-b border-(--color-border-tertiary)">
+                      Settlement Value
                     </th>
-                    <th className="border-b border-(--border) px-5 py-4 text-sm font-semibold text-(--text)">
-                      Actions
+                    <th className="px-8 py-6 text-[10px] font-black uppercase tracking-widest text-(--color-text-tertiary) text-left border-b border-(--color-border-tertiary)">
+                      Inventory Index
+                    </th>
+                    <th className="px-8 py-6 text-[10px] font-black uppercase tracking-widest text-(--color-text-tertiary) text-right border-b border-(--color-border-tertiary)">
+                      Control
                     </th>
                   </tr>
                 </thead>
@@ -91,31 +100,48 @@ const ProductList = () => {
                   {products.map((product) => (
                     <tr
                       key={product._id}
-                      className="border-b border-(--border) last:border-b-0"
+                      className="group border-b border-(--color-border-tertiary) last:border-b-0 hover:bg-(--color-background-secondary) transition-colors"
                     >
-                      <td className="px-5 py-4 text-sm text-(--text)">
-                        {product.title}
+                      <td className="px-8 py-6">
+                        <div className="flex items-center gap-4">
+                          <div className="h-10 w-10 rounded-lg overflow-hidden border border-(--color-border-tertiary) bg-(--color-background-secondary)">
+                            <img src={product.image} alt="" className="h-full w-full object-cover grayscale opacity-50 group-hover:grayscale-0 group-hover:opacity-100 transition-all" />
+                          </div>
+                          <p className="text-sm font-bold text-(--midnight) truncate max-w-[250px]">
+                            {product.title}
+                          </p>
+                        </div>
                       </td>
-                      <td className="px-5 py-4 text-sm text-(--text)">
-                        Rs. {Number(product.price).toLocaleString()}
+                      <td className="px-8 py-6">
+                        <span className="text-[10px] font-bold text-(--color-text-tertiary) uppercase tracking-widest">
+                          {product.category}
+                        </span>
                       </td>
-                      <td className="px-5 py-4 text-sm text-(--text)">
-                        {product.stock}
+                      <td className="px-8 py-6">
+                        <p className="text-sm font-bold text-(--midnight)">
+                          ₹{Number(product.price).toLocaleString()}
+                        </p>
                       </td>
-                      <td className="px-5 py-4">
-                        <div className="flex flex-wrap gap-3">
+                      <td className="px-8 py-6">
+                        <div className="flex items-center gap-2">
+                           <div className={`h-1.5 w-1.5 rounded-full ${product.stock > 10 ? 'bg-emerald-500' : 'bg-amber-500'}`}></div>
+                           <p className="text-xs font-bold text-(--midnight)">{product.stock} units</p>
+                        </div>
+                      </td>
+                      <td className="px-8 py-6">
+                        <div className="flex items-center justify-end gap-3 opacity-0 group-hover:opacity-100 transition-opacity">
                           <Link
                             to={`/admin/products/edit/${product._id}`}
-                            className="inline-flex items-center rounded-full border border-(--border) px-4 py-2 text-sm font-medium text-(--primary) transition hover:bg-(--surface-soft)"
+                            className="h-10 px-4 flex items-center justify-center border border-(--color-border-tertiary) rounded-lg text-[9px] font-black uppercase tracking-widest text-(--midnight) hover:bg-(--midnight) hover:text-white transition-all"
                           >
-                            Edit
+                            Modify
                           </Link>
                           <button
                             type="button"
                             onClick={() => deleteProduct(product._id)}
-                            className="theme-btn-accent rounded-full px-4 py-2 text-sm font-medium"
+                            className="h-10 w-10 flex items-center justify-center bg-red-50 text-red-600 rounded-lg hover:bg-red-600 hover:text-white transition-all"
                           >
-                            Delete
+                            ✕
                           </button>
                         </div>
                       </td>
