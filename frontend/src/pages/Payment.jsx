@@ -112,7 +112,7 @@ const Payment = () => {
                     <p className="text-xs font-medium text-(--color-text-tertiary) mt-1">{selectedAddress?.phone}</p>
                   </div>
                   <div className="space-y-1">
-                    <p className="text-sm text-(--color-text-secondary) leading-relaxed">{selectedAddress?.adressLine}</p>
+                    <p className="text-sm text-(--color-text-secondary) leading-relaxed">{selectedAddress?.addressLine}</p>
                     <p className="text-sm font-bold text-(--midnight)">{selectedAddress?.city}, {selectedAddress?.state} — {selectedAddress?.pincode}</p>
                   </div>
                 </div>

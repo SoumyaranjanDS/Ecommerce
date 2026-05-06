@@ -11,7 +11,7 @@ const Address = () => {
   const [formData, setFormData] = useState({
     fullname: "",
     phone: "",
-    adressLine: "",
+    addressLine: "",
     city: "",
     state: "",
     pincode: "",
@@ -52,7 +52,7 @@ const Address = () => {
 
     try {
       const res = await api.post("/user/address/save", {
-        userid: userId,
+        userId: userId,
         ...formData,
       });
 
@@ -62,7 +62,7 @@ const Address = () => {
       setFormData({
         fullname: "",
         phone: "",
-        adressLine: "",
+        addressLine: "",
         city: "",
         state: "",
         pincode: "",
@@ -126,7 +126,7 @@ const Address = () => {
                           <p className="text-xs font-medium text-(--color-text-tertiary) mt-1">{addr.phone}</p>
                         </div>
                         <div className="space-y-1">
-                          <p className="text-sm text-(--color-text-secondary) leading-relaxed">{addr.adressLine}</p>
+                          <p className="text-sm text-(--color-text-secondary) leading-relaxed">{addr.addressLine}</p>
                           <p className="text-sm font-bold text-(--midnight)">{addr.city}, {addr.state} — {addr.pincode}</p>
                         </div>
                       </div>
@@ -182,9 +182,9 @@ const Address = () => {
                 <label className="text-[10px] font-black uppercase tracking-widest text-(--color-text-tertiary) ml-1">Logistic Path (Address)</label>
                 <input
                   type="text"
-                  name="adressLine"
+                  name="addressLine"
                   required
-                  value={formData.adressLine}
+                  value={formData.addressLine}
                   onChange={handleChange}
                   placeholder="Street, Building, Flat"
                   className="w-full bg-(--color-background-secondary) border border-(--color-border-tertiary) rounded-xl px-5 py-3.5 text-xs font-bold focus:outline-none focus:border-(--midnight) transition-all"
@@ -233,7 +233,7 @@ const Address = () => {
 
               <button
                 type="submit"
-                className="w-full bg-(--midnight) text-white py-4 rounded-xl text-[11px] font-black uppercase tracking-[0.2em] shadow-xl shadow-black/10 transition-all hover:opacity-95 active:scale-[0.98] mt-4"
+                className="w-full bg-white border-2 border-black text-black py-4 rounded-xl text-[11px] font-black uppercase tracking-[0.2em] shadow-xl shadow-black/5 transition-all hover:bg-black hover:text-white active:scale-[0.98] mt-4"
               >
                 Register Location
               </button>

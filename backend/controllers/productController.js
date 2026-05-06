@@ -1,7 +1,7 @@
-const mongoose = require("mongoose");
-const Product = require("../models/poduct");
+import mongoose from "mongoose";
+import Product from "../models/product.js";
 
-const handelCreateProduct = async (req, res) => {
+export const handelCreateProduct = async (req, res) => {
   try {
     const product = await Product.create(req.body);
     res.json({
@@ -13,7 +13,7 @@ const handelCreateProduct = async (req, res) => {
   }
 };
 
-const handelGetAllProducts = async (req, res) => {
+export const handelGetAllProducts = async (req, res) => {
   try {
     const { search, category, limit = 10, page = 1 } = req.query;
     let query = {};
@@ -45,7 +45,7 @@ const handelGetAllProducts = async (req, res) => {
   }
 };
 
-const handelGetProductById = async (req, res) => {
+export const handelGetProductById = async (req, res) => {
   try {
     const oneProduct = await Product.findById(req.params.id);
 
@@ -59,7 +59,7 @@ const handelGetProductById = async (req, res) => {
   }
 };
 
-const handelUpdateProduct = async (req, res) => {
+export const handelUpdateProduct = async (req, res) => {
   try {
     const updatedProduct = await Product.findByIdAndUpdate(
       req.params.id,
@@ -79,19 +79,11 @@ const handelUpdateProduct = async (req, res) => {
   }
 };
 
-const handelDeleteProduct = async (req, res) => {
+export const handelDeleteProduct = async (req, res) => {
   try {
     await Product.findByIdAndDelete(req.params.id);
     res.json({ message: "product deleted successfully" });
   } catch (error) {
     res.status(500).json({ message: "internal server error" });
   }
-};
-
-module.exports = {
-  handelCreateProduct,
-  handelGetAllProducts,
-  handelGetProductById,
-  handelUpdateProduct,
-  handelDeleteProduct,
 };

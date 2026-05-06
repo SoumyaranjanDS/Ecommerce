@@ -1,6 +1,6 @@
-const jwt = require("jsonwebtoken");
+import jwt from "jsonwebtoken";
 
-const verifyToken = (req, res, next) => {
+export const verifyToken = (req, res, next) => {
   try {
     const token = req.headers.authorization?.split(" ")[1];
 
@@ -17,11 +17,9 @@ const verifyToken = (req, res, next) => {
   }
 };
 
-const verifyAdmin = (req, res, next) => {
+export const verifyAdmin = (req, res, next) => {
   if (req.userRole !== "admin") {
     return res.status(403).json({ message: "Admin access required" });
   }
   next();
 };
-
-module.exports = { verifyToken, verifyAdmin };

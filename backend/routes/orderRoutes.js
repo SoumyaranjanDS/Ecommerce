@@ -1,12 +1,12 @@
-const express = require("express");
-const {
+import express from "express";
+import {
   handelCreateOrder,
   handelGetOrdersByUserId,
   handelGetOrderById,
   handelUpdateOrderStatus,
   handelGetAllOrders,
-} = require("../controllers/orderController");
-const { verifyToken, verifyAdmin } = require("../middleware/auth");
+} from "../controllers/orderController.js";
+import { verifyToken, verifyAdmin } from "../middleware/auth.js";
 
 const router = express.Router();
 
@@ -26,4 +26,4 @@ router.get("/details/:orderId", verifyToken, handelGetOrderById);
 // Update order status (admin only)
 router.put("/update/:orderId", verifyToken, verifyAdmin, handelUpdateOrderStatus);
 
-module.exports = router;
+export default router;

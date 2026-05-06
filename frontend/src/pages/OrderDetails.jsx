@@ -110,7 +110,7 @@ const OrderDetails = () => {
                     <p className="text-xs font-medium text-(--color-text-tertiary) mt-1">{order.addressId?.phone}</p>
                   </div>
                   <div className="space-y-1">
-                    <p className="text-sm text-(--color-text-secondary) leading-relaxed">{order.addressId?.adressLine}</p>
+                    <p className="text-sm text-(--color-text-secondary) leading-relaxed">{order.addressId?.addressLine}</p>
                     <p className="text-sm font-bold text-(--midnight)">{order.addressId?.city}, {order.addressId?.state} — {order.addressId?.pincode}</p>
                   </div>
                 </div>

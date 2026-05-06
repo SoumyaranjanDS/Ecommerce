@@ -89,13 +89,14 @@ const UserDashboard = () => {
         api.get(`/user/address/get/${userId}`),
       ]);
       const profile = profileRes.data;
-      const allOrders = ordersRes.data || [];
+      const ordersData = ordersRes.data || {};
+      const allOrders = ordersData.orders || [];
       const userAddresses = addressRes.data || [];
       setUser(profile);
       setRecentOrders(allOrders.slice(0, 3));
       setAddresses(userAddresses.slice(0, 2));
       setStats({
-        totalOrders: allOrders.length,
+        totalOrders: ordersData.totalOrders || allOrders.length,
         pendingOrders: allOrders.filter(o => o.status !== "delivered" && o.status !== "cancelled").length,
         reviews: 0,
       });
@@ -270,7 +271,7 @@ const UserDashboard = () => {
                   addresses.map((addr) => (
                     <div key={addr._id} className="bg-white border border-(--color-border-tertiary) rounded-3xl p-6">
                       <p className="font-bold text-sm text-(--midnight) mb-2">{addr.fullname}</p>
-                      <p className="text-xs text-(--color-text-secondary) leading-relaxed mb-4">{addr.adressLine}, {addr.city}</p>
+                      <p className="text-xs text-(--color-text-secondary) leading-relaxed mb-4">{addr.addressLine}, {addr.city}</p>
                       <p className="text-[9px] font-bold text-(--color-text-tertiary) uppercase tracking-[0.2em]">Verified Logistic Point</p>
                     </div>
                   ))

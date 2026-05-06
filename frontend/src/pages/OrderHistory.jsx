@@ -7,6 +7,8 @@ const OrderHistory = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [selectedOrder, setSelectedOrder] = useState(null);
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
   const navigate = useNavigate();
 
   const userId = localStorage.getItem("userId");
@@ -19,10 +21,13 @@ const OrderHistory = () => {
     fetchOrders();
   }, [userId]);
 
-  const fetchOrders = async () => {
+  const fetchOrders = async (pageNum = 1) => {
     try {
-      const response = await api.get(`/order/user/${userId}`);
-      setOrders(response.data || []);
+      setLoading(true);
+      const response = await api.get(`/order/user/${userId}?page=${pageNum}&limit=5`);
+      setOrders(response.data.orders || []);
+      setTotalPages(response.data.pages || 1);
+      setPage(pageNum);
     } catch (err) {
       console.error("Failed to fetch orders:", err);
       setError("Unable to load procurement records.");
@@ -137,6 +142,39 @@ const OrderHistory = () => {
                 </div>
               </div>
             ))}
+
+            {/* Pagination Controls */}
+            {totalPages > 1 && (
+              <div className="mt-12 flex items-center justify-center gap-4">
+                <button
+                  onClick={() => fetchOrders(page - 1)}
+                  disabled={page === 1}
+                  className="px-6 py-2 border border-(--color-border-tertiary) rounded-full text-[10px] font-bold uppercase tracking-widest disabled:opacity-20 hover:border-(--midnight) transition-all"
+                >
+                  Prev
+                </button>
+                <div className="flex gap-2">
+                  {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
+                    <button
+                      key={p}
+                      onClick={() => fetchOrders(p)}
+                      className={`h-8 w-8 flex items-center justify-center rounded-full text-[10px] font-bold transition-all ${
+                        page === p ? "bg-(--midnight) text-white" : "text-(--color-text-tertiary) hover:text-(--midnight)"
+                      }`}
+                    >
+                      {p}
+                    </button>
+                  ))}
+                </div>
+                <button
+                  onClick={() => fetchOrders(page + 1)}
+                  disabled={page === totalPages}
+                  className="px-6 py-2 border border-(--color-border-tertiary) rounded-full text-[10px] font-bold uppercase tracking-widest disabled:opacity-20 hover:border-(--midnight) transition-all"
+                >
+                  Next
+                </button>
+              </div>
+            )}
           </div>
         )}
       </div>
@@ -169,7 +207,7 @@ const OrderHistory = () => {
                     <div className="space-y-3">
                       <p className="text-md font-bold text-(--midnight)">{selectedOrder.addressId.fullname}</p>
                       <p className="text-xs font-medium text-(--color-text-secondary) leading-relaxed">
-                        {selectedOrder.addressId.adressLine}<br />
+                        {selectedOrder.addressId.addressLine}<br />
                         {selectedOrder.addressId.city}, {selectedOrder.addressId.state} — {selectedOrder.addressId.pincode}
                       </p>
                       <p className="text-xs font-bold text-(--midnight) pt-2">Contact: {selectedOrder.addressId.phone}</p>

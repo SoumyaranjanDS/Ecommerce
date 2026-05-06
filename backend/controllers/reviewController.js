@@ -1,9 +1,9 @@
-const mongoose = require("mongoose");
-const Review = require("../models/review");
-const Product = require("../models/poduct");
-const Order = require("../models/order");
+import mongoose from "mongoose";
+import Review from "../models/review.js";
+import Product from "../models/product.js";
+import Order from "../models/order.js";
 
-const handelCreateReview = async (req, res) => {
+export const handelCreateReview = async (req, res) => {
   try {
     const { productId, rating, comment } = req.body;
     const userId = req.userId;
@@ -60,7 +60,7 @@ const handelCreateReview = async (req, res) => {
   }
 };
 
-const handelGetProductReviews = async (req, res) => {
+export const handelGetProductReviews = async (req, res) => {
   try {
     const { productId } = req.params;
     const { limit = 10, page = 1 } = req.query;
@@ -91,7 +91,7 @@ const handelGetProductReviews = async (req, res) => {
   }
 };
 
-const handelGetUserReviews = async (req, res) => {
+export const handelGetUserReviews = async (req, res) => {
   try {
     const userId = req.userId;
     const { limit = 10, page = 1 } = req.query;
@@ -116,7 +116,7 @@ const handelGetUserReviews = async (req, res) => {
   }
 };
 
-const handelUpdateReview = async (req, res) => {
+export const handelUpdateReview = async (req, res) => {
   try {
     const { reviewId } = req.params;
     const { rating, comment } = req.body;
@@ -153,7 +153,7 @@ const handelUpdateReview = async (req, res) => {
   }
 };
 
-const handelDeleteReview = async (req, res) => {
+export const handelDeleteReview = async (req, res) => {
   try {
     const { reviewId } = req.params;
     const userId = req.userId;
@@ -175,12 +175,4 @@ const handelDeleteReview = async (req, res) => {
   } catch (error) {
     res.status(500).json({ message: "Internal server error", error: error.message });
   }
-};
-
-module.exports = {
-  handelCreateReview,
-  handelGetProductReviews,
-  handelGetUserReviews,
-  handelUpdateReview,
-  handelDeleteReview,
 };

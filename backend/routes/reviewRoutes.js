@@ -1,12 +1,12 @@
-const express = require("express");
-const {
+import express from "express";
+import {
   handelCreateReview,
   handelGetProductReviews,
   handelGetUserReviews,
   handelUpdateReview,
   handelDeleteReview,
-} = require("../controllers/reviewController");
-const { verifyToken } = require("../middleware/auth");
+} from "../controllers/reviewController.js";
+import { verifyToken } from "../middleware/auth.js";
 
 const router = express.Router();
 
@@ -25,4 +25,4 @@ router.put("/:reviewId", verifyToken, handelUpdateReview);
 // Delete review
 router.delete("/:reviewId", verifyToken, handelDeleteReview);
 
-module.exports = router;
+export default router;

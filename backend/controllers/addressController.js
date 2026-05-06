@@ -1,7 +1,7 @@
-const Address = require("../models/address");
+import Address from "../models/address.js";
 
 // save address
-const handelSaveAddress = async (req, res) => {
+export const handelSaveAddress = async (req, res) => {
   try {
     const address = await Address.create(req.body);
     res.status(201).json({ message: "Address saved succesfully", address });
@@ -12,12 +12,7 @@ const handelSaveAddress = async (req, res) => {
 
 // get saved addresses
 
-const handelGetSavedAddress = async (req, res) => {
-  const userAddresses = await Address.find({ userid: req.params.userid });
+export const handelGetSavedAddress = async (req, res) => {
+  const userAddresses = await Address.find({ userId: req.params.userid });
   res.json(userAddresses);
-};
-
-module.exports = {
-  handelSaveAddress,
-  handelGetSavedAddress,
 };

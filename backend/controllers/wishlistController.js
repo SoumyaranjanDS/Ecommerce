@@ -1,6 +1,6 @@
-const User = require("../models/user");
+import User from "../models/user.js";
 
-const handelAddToWishlist = async (req, res) => {
+export const handelAddToWishlist = async (req, res) => {
   try {
     const { productId } = req.body;
     const userId = req.userId;
@@ -22,7 +22,7 @@ const handelAddToWishlist = async (req, res) => {
   }
 };
 
-const handelRemoveFromWishlist = async (req, res) => {
+export const handelRemoveFromWishlist = async (req, res) => {
   try {
     const { productId } = req.params;
     const userId = req.userId;
@@ -40,7 +40,7 @@ const handelRemoveFromWishlist = async (req, res) => {
   }
 };
 
-const handelGetWishlist = async (req, res) => {
+export const handelGetWishlist = async (req, res) => {
   try {
     const userId = req.userId;
     const user = await User.findById(userId).populate("wishlist");
@@ -51,10 +51,4 @@ const handelGetWishlist = async (req, res) => {
     console.error("Wishlist Get Error:", error);
     res.status(500).json({ message: "Server error" });
   }
-};
-
-module.exports = {
-  handelAddToWishlist,
-  handelRemoveFromWishlist,
-  handelGetWishlist,
 };

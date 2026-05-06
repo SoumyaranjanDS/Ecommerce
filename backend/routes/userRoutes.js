@@ -1,13 +1,13 @@
-const express = require("express");
-const {
+import express from "express";
+import {
   handelGetUserProfile,
   handelUpdateUserProfile,
   handelChangePassword,
   handelGetAllUsers,
   handelDeleteUser,
   handelUpdateUserRole,
-} = require("../controllers/userController");
-const { verifyToken, verifyAdmin } = require("../middleware/auth");
+} from "../controllers/userController.js";
+import { verifyToken, verifyAdmin } from "../middleware/auth.js";
 
 const router = express.Router();
 
@@ -25,5 +25,4 @@ router.get("/", verifyToken, verifyAdmin, handelGetAllUsers);
 router.delete("/:id", verifyToken, verifyAdmin, handelDeleteUser);
 router.put("/role/:id", verifyToken, verifyAdmin, handelUpdateUserRole);
 
-module.exports = router;
-
+export default router;

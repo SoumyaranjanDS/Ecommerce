@@ -1,13 +1,17 @@
-const mongoose = require("mongoose");
-const path = require("path");
-const dotenv = require("dotenv");
-const Coupon = require("./models/coupon");
+import mongoose from "mongoose";
+import path from "path";
+import { fileURLToPath } from "url";
+import dotenv from "dotenv";
+import Coupon from "./models/coupon.js";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 dotenv.config({ path: path.join(__dirname, ".env") });
 
 const seedCoupon = async () => {
   try {
-    await mongoose.connect(process.env.MONGO_URI);
+    await mongoose.connect(process.env.MONGO_URI || "mongodb://localhost:27017/ecommerce");
     console.log("Connected to MongoDB");
 
     const code = "COMEBACK10";

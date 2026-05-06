@@ -1,9 +1,9 @@
-const express = require("express");
-const {
+import express from "express";
+import {
   handelGetDashboardStats,
   handelGetSalesData,
-} = require("../controllers/dashboardController");
-const { verifyToken, verifyAdmin } = require("../middleware/auth");
+} from "../controllers/dashboardController.js";
+import { verifyToken, verifyAdmin } from "../middleware/auth.js";
 
 const router = express.Router();
 
@@ -13,4 +13,4 @@ router.get("/stats", verifyToken, verifyAdmin, handelGetDashboardStats);
 // Get sales data (admin only)
 router.get("/sales", verifyToken, verifyAdmin, handelGetSalesData);
 
-module.exports = router;
+export default router;

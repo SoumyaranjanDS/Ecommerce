@@ -1,14 +1,12 @@
-const express = require("express");
-
-const {
+import express from "express";
+import {
   handelCreateProduct,
   handelGetAllProducts,
   handelGetProductById,
   handelUpdateProduct,
   handelDeleteProduct,
-} = require("../controllers/productController");
-
-const { verifyToken, verifyAdmin } = require("../middleware/auth");
+} from "../controllers/productController.js";
+import { verifyToken, verifyAdmin } from "../middleware/auth.js";
 
 const router = express.Router();
 
@@ -19,4 +17,4 @@ router.post("/update/:id", verifyToken, verifyAdmin, handelUpdateProduct);
 router.put("/update/:id", verifyToken, verifyAdmin, handelUpdateProduct);
 router.delete("/delete/:id", verifyToken, verifyAdmin, handelDeleteProduct);
 
-module.exports = router;
+export default router;

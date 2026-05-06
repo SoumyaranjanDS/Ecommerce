@@ -1,6 +1,6 @@
-const Coupon = require("../models/coupon");
+import Coupon from "../models/coupon.js";
 
-const handelCreateCoupon = async (req, res) => {
+export const handelCreateCoupon = async (req, res) => {
   try {
     const { code, discountType, discountValue, minOrderAmount, maxUses, expiryDate } =
       req.body;
@@ -35,7 +35,7 @@ const handelCreateCoupon = async (req, res) => {
   }
 };
 
-const handelValidateCoupon = async (req, res) => {
+export const handelValidateCoupon = async (req, res) => {
   try {
     const { code, orderAmount } = req.body;
 
@@ -85,7 +85,7 @@ const handelValidateCoupon = async (req, res) => {
   }
 };
 
-const handelUseCoupon = async (req, res) => {
+export const handelUseCoupon = async (req, res) => {
   try {
     const { code } = req.body;
 
@@ -111,7 +111,7 @@ const handelUseCoupon = async (req, res) => {
   }
 };
 
-const handelGetAllCoupons = async (req, res) => {
+export const handelGetAllCoupons = async (req, res) => {
   try {
     const { limit = 10, page = 1 } = req.query;
     const skip = (page - 1) * limit;
@@ -133,7 +133,7 @@ const handelGetAllCoupons = async (req, res) => {
   }
 };
 
-const handelDeleteCoupon = async (req, res) => {
+export const handelDeleteCoupon = async (req, res) => {
   try {
     const { couponId } = req.params;
 
@@ -149,12 +149,4 @@ const handelDeleteCoupon = async (req, res) => {
   } catch (error) {
     res.status(500).json({ message: "Internal server error", error: error.message });
   }
-};
-
-module.exports = {
-  handelCreateCoupon,
-  handelValidateCoupon,
-  handelUseCoupon,
-  handelGetAllCoupons,
-  handelDeleteCoupon,
 };

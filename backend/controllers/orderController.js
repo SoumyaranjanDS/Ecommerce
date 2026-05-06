@@ -1,11 +1,11 @@
-const Order = require("../models/order");
-const Cart = require("../models/cart");
-const Product = require("../models/poduct");
-const Coupon = require("../models/coupon");
-const User = require("../models/user");
-const { sendOrderConfirmation } = require("../utils/emailService");
+import Order from "../models/order.js";
+import Cart from "../models/cart.js";
+import Product from "../models/product.js";
+import Coupon from "../models/coupon.js";
+import User from "../models/user.js";
+import { sendOrderConfirmation } from "../utils/emailService.js";
 
-const handelCreateOrder = async (req, res) => {
+export const handelCreateOrder = async (req, res) => {
   try {
     const { userId, addressId, paymentMethod, couponCode, discountAmount } = req.body;
 
@@ -124,22 +124,33 @@ const handelCreateOrder = async (req, res) => {
   }
 };
 
-const handelGetOrdersByUserId = async (req, res) => {
+export const handelGetOrdersByUserId = async (req, res) => {
   try {
     const { userId } = req.params;
+    const { limit = 10, page = 1 } = req.query;
+    const skip = (page - 1) * limit;
 
     const orders = await Order.find({ userId })
       .populate("products.productId", "title price image")
       .populate("addressId")
-      .sort({ createdAt: -1 });
+      .sort({ createdAt: -1 })
+      .limit(Number(limit))
+      .skip(Number(skip));
 
-    res.status(200).json(orders);
+    const totalOrders = await Order.countDocuments({ userId });
+
+    res.status(200).json({
+      orders,
+      totalOrders,
+      pages: Math.ceil(totalOrders / limit),
+      currentPage: Number(page),
+    });
   } catch (error) {
     res.status(500).json({ message: "Internal server error", error: error.message });
   }
 };
 
-const handelGetOrderById = async (req, res) => {
+export const handelGetOrderById = async (req, res) => {
   try {
     const { orderId } = req.params;
 
@@ -158,7 +169,7 @@ const handelGetOrderById = async (req, res) => {
   }
 };
 
-const handelUpdateOrderStatus = async (req, res) => {
+export const handelUpdateOrderStatus = async (req, res) => {
   try {
     const { orderId } = req.params;
     const { status, paymentStatus } = req.body;
@@ -186,25 +197,29 @@ const handelUpdateOrderStatus = async (req, res) => {
   }
 };
 
-const handelGetAllOrders = async (req, res) => {
+export const handelGetAllOrders = async (req, res) => {
   try {
+    const { limit = 10, page = 1 } = req.query;
+    const skip = (page - 1) * limit;
+
     const orders = await Order.find()
       .populate("userId", "name email")
       .populate("products.productId", "title price")
       .populate("addressId")
-      .sort({ createdAt: -1 });
+      .sort({ createdAt: -1 })
+      .limit(Number(limit))
+      .skip(Number(skip));
 
-    res.status(200).json(orders);
+    const totalOrders = await Order.countDocuments();
+
+    res.status(200).json({
+      orders,
+      totalOrders,
+      pages: Math.ceil(totalOrders / limit),
+      currentPage: Number(page),
+    });
   } catch (error) {
     res.status(500).json({ message: "Internal server error", error: error.message });
   }
-};
-
-module.exports = {
-  handelCreateOrder,
-  handelGetOrdersByUserId,
-  handelGetOrderById,
-  handelUpdateOrderStatus,
-  handelGetAllOrders,
 };
 

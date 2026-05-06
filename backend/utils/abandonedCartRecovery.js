@@ -1,6 +1,6 @@
-const Cart = require("../models/cart");
-const User = require("../models/user");
-const { sendAbandonedCartEmail } = require("./emailService");
+import Cart from "../models/cart.js";
+import User from "../models/user.js";
+import { sendAbandonedCartEmail } from "./emailService.js";
 
 const runAbandonedCartCheck = async () => {
   console.log("Running abandoned cart check...");
@@ -28,8 +28,6 @@ const runAbandonedCartCheck = async () => {
 };
 
 // Start the periodic check every hour
-const startAbandonedCartRecovery = () => {
+export const startAbandonedCartRecovery = () => {
   setInterval(runAbandonedCartCheck, 60 * 60 * 1000);
 };
-
-module.exports = { startAbandonedCartRecovery };

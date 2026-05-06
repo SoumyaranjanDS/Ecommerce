@@ -6,13 +6,17 @@ const ProductList = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
 
-  const loadProducts = async () => {
+  const loadProducts = async (pageNum = 1) => {
     try {
       setLoading(true);
       setError("");
-      const response = await api.get("/product");
-      setProducts(Array.isArray(response.data) ? response.data : []);
+      const response = await api.get(`/product?page=${pageNum}&limit=10`);
+      setProducts(response.data.products || []);
+      setTotalPages(response.data.pages || 1);
+      setPage(pageNum);
     } catch (err) {
       setError("Inventory retrieval failed.");
     } finally {
@@ -152,6 +156,39 @@ const ProductList = () => {
             </div>
           )}
         </div>
+
+        {/* Pagination */}
+        {totalPages > 1 && (
+          <div className="mt-10 flex items-center justify-center gap-4">
+            <button
+              onClick={() => loadProducts(page - 1)}
+              disabled={page === 1}
+              className="px-6 py-2 border border-(--color-border-tertiary) rounded-xl text-[10px] font-black uppercase tracking-widest disabled:opacity-20 hover:border-(--midnight) transition-all"
+            >
+              Prev
+            </button>
+            <div className="flex gap-2">
+              {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
+                <button
+                  key={p}
+                  onClick={() => loadProducts(p)}
+                  className={`h-10 w-10 flex items-center justify-center rounded-xl text-[10px] font-black transition-all ${
+                    page === p ? "bg-(--midnight) text-white" : "text-(--color-text-tertiary) hover:text-(--midnight)"
+                  }`}
+                >
+                  {p}
+                </button>
+              ))}
+            </div>
+            <button
+              onClick={() => loadProducts(page + 1)}
+              disabled={page === totalPages}
+              className="px-6 py-2 border border-(--color-border-tertiary) rounded-xl text-[10px] font-black uppercase tracking-widest disabled:opacity-20 hover:border-(--midnight) transition-all"
+            >
+              Next
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );

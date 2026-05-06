@@ -1,7 +1,7 @@
-const User = require("../models/user");
-const bcrypt = require("bcryptjs");
+import User from "../models/user.js";
+import bcrypt from "bcryptjs";
 
-const handelGetUserProfile = async (req, res) => {
+export const handelGetUserProfile = async (req, res) => {
   try {
     const userId = req.userId;
 
@@ -16,7 +16,7 @@ const handelGetUserProfile = async (req, res) => {
   }
 };
 
-const handelUpdateUserProfile = async (req, res) => {
+export const handelUpdateUserProfile = async (req, res) => {
   try {
     const userId = req.userId;
     const { name, email } = req.body;
@@ -39,6 +39,10 @@ const handelUpdateUserProfile = async (req, res) => {
       "-password"
     );
 
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
     res.status(200).json({
       message: "Profile updated successfully",
       user,
@@ -48,7 +52,7 @@ const handelUpdateUserProfile = async (req, res) => {
   }
 };
 
-const handelChangePassword = async (req, res) => {
+export const handelChangePassword = async (req, res) => {
   try {
     const userId = req.userId;
     const { oldPassword, newPassword } = req.body;
@@ -81,7 +85,7 @@ const handelChangePassword = async (req, res) => {
   }
 };
 
-const handelGetAllUsers = async (req, res) => {
+export const handelGetAllUsers = async (req, res) => {
   try {
     const { limit = 10, page = 1 } = req.query;
     const skip = (page - 1) * limit;
@@ -104,17 +108,20 @@ const handelGetAllUsers = async (req, res) => {
   }
 };
 
-const handelDeleteUser = async (req, res) => {
+export const handelDeleteUser = async (req, res) => {
   try {
     const { id } = req.params;
-    await User.findByIdAndDelete(id);
+    const user = await User.findByIdAndDelete(id);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
     res.status(200).json({ message: "User deleted successfully" });
   } catch (error) {
     res.status(500).json({ message: "Internal server error", error: error.message });
   }
 };
 
-const handelUpdateUserRole = async (req, res) => {
+export const handelUpdateUserRole = async (req, res) => {
   try {
     const { id } = req.params;
     const { role } = req.body;
@@ -124,19 +131,13 @@ const handelUpdateUserRole = async (req, res) => {
     }
 
     const user = await User.findByIdAndUpdate(id, { role }, { new: true }).select("-password");
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
     res.status(200).json({ message: "User role updated", user });
   } catch (error) {
     res.status(500).json({ message: "Internal server error", error: error.message });
   }
-};
-
-module.exports = {
-  handelGetUserProfile,
-  handelUpdateUserProfile,
-  handelChangePassword,
-  handelGetAllUsers,
-  handelDeleteUser,
-  handelUpdateUserRole,
 };
 
 

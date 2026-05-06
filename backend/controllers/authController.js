@@ -1,7 +1,7 @@
-const User = require("../models/user");
-const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken");
-const { sendWelcomeEmail } = require("../utils/emailService");
+import User from "../models/user.js";
+import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
+import { sendWelcomeEmail } from "../utils/emailService.js";
 
 const generateTokens = (user) => {
   const accessToken = jwt.sign(
@@ -17,7 +17,7 @@ const generateTokens = (user) => {
   return { accessToken, refreshToken };
 };
 
-const handelSignupUser = async (req, res) => {
+export const handelSignupUser = async (req, res) => {
   try {
     const { name, email, password, referredBy } = req.body;
 
@@ -77,7 +77,7 @@ const handelSignupUser = async (req, res) => {
   }
 };
 
-const handelLoginUser = async (req, res) => {
+export const handelLoginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
 
@@ -120,7 +120,7 @@ const handelLoginUser = async (req, res) => {
   }
 };
 
-const handelRefreshToken = async (req, res) => {
+export const handelRefreshToken = async (req, res) => {
   try {
     const refreshToken = req.cookies.refreshToken;
     if (!refreshToken) return res.status(401).json({ message: "No refresh token" });
@@ -144,9 +144,7 @@ const handelRefreshToken = async (req, res) => {
   }
 };
 
-const handelLogoutUser = async (req, res) => {
+export const handelLogoutUser = async (req, res) => {
   res.clearCookie("refreshToken");
   res.status(200).json({ message: "Logged out successfully" });
 };
-
-module.exports = { handelSignupUser, handelLoginUser, handelRefreshToken, handelLogoutUser };

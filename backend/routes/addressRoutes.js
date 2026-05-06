@@ -1,13 +1,13 @@
-const express = require("express");
-const {
+import express from "express";
+import {
   handelSaveAddress,
   handelGetSavedAddress,
-} = require("../controllers/addressController");
-const { verifyToken } = require("../middleware/auth");
+} from "../controllers/addressController.js";
+import { verifyToken } from "../middleware/auth.js";
 
 const router = express.Router();
 
 router.post("/save", verifyToken, handelSaveAddress);
 router.get("/get/:userid", verifyToken, handelGetSavedAddress);
 
-module.exports = router
+export default router;

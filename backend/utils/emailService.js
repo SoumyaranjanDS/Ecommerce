@@ -1,4 +1,4 @@
-const nodemailer = require("nodemailer");
+import nodemailer from "nodemailer";
 
 let transporter;
 
@@ -45,7 +45,7 @@ const getTransporter = async () => {
   return transporter;
 };
 
-const sendOrderConfirmation = async (userEmail, orderDetails) => {
+export const sendOrderConfirmation = async (userEmail, orderDetails) => {
   try {
     const transport = await getTransporter();
     const info = await transport.sendMail({
@@ -80,7 +80,7 @@ const sendOrderConfirmation = async (userEmail, orderDetails) => {
   }
 };
 
-const sendWelcomeEmail = async (userEmail, userName) => {
+export const sendWelcomeEmail = async (userEmail, userName) => {
   try {
     const transport = await getTransporter();
     const info = await transport.sendMail({
@@ -109,7 +109,7 @@ const sendWelcomeEmail = async (userEmail, userName) => {
   }
 };
 
-const sendAbandonedCartEmail = async (email, name, itemCount) => {
+export const sendAbandonedCartEmail = async (email, name, itemCount) => {
   const mailOptions = {
     from: `"STAKY Premium" <${process.env.EMAIL_USER || "test@ethereal.email"}>`,
     to: email,
@@ -152,10 +152,4 @@ const sendAbandonedCartEmail = async (email, name, itemCount) => {
   } catch (error) {
     console.error("Error sending abandoned cart email:", error);
   }
-};
-
-module.exports = {
-  sendOrderConfirmation,
-  sendWelcomeEmail,
-  sendAbandonedCartEmail
 };

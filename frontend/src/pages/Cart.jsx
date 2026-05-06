@@ -174,7 +174,7 @@ const Cart = () => {
               )}
               {products.map((item) => (
                 <div
-                  key={item.productId?._id}
+                  key={item._id}
                   className="bg-white border border-(--color-border-tertiary) rounded-2xl p-6 flex flex-col sm:flex-row items-center gap-8 shadow-sm group hover:border-(--color-border-primary) transition-all"
                 >
                   <div className="h-32 w-32 shrink-0 overflow-hidden rounded-xl bg-(--color-background-secondary) border border-(--color-border-tertiary)">
@@ -186,13 +186,13 @@ const Cart = () => {
                   </div>
 
                   <div className="flex-1 min-w-0">
-                    <p className="text-[10px] font-bold uppercase tracking-widest text-(--color-text-tertiary) mb-1">
+                    <p className="text-[10px] font-black uppercase tracking-widest text-black/40 mb-1">
                       {item.productId?.category}
                     </p>
-                    <h2 className="text-lg font-bold text-(--midnight) truncate mb-2">
+                    <h2 className="text-lg font-bold text-black truncate mb-2">
                       {item.productId?.title}
                     </h2>
-                    <p className="text-sm font-bold text-(--midnight)">
+                    <p className="text-sm font-black text-black">
                       ₹{item.productId?.price.toLocaleString("en-IN")}
                     </p>
                   </div>
@@ -265,42 +265,42 @@ const Cart = () => {
               </div>
 
               {/* Cost Calculation */}
-              <div className="bg-(--midnight) text-white rounded-2xl p-10 shadow-2xl">
-                <h3 className="text-[11px] font-black uppercase tracking-[0.25em] mb-10 opacity-60">Order Analysis</h3>
+              <div className="bg-white border border-(--color-border-tertiary) text-black rounded-2xl p-10 shadow-sm">
+                <h3 className="text-[11px] font-black uppercase tracking-[0.25em] mb-10 opacity-40">Order Analysis</h3>
                 <div className="space-y-6">
                   <div className="flex justify-between items-center text-sm">
-                    <span className="opacity-50 font-medium">Subtotal</span>
+                    <span className="opacity-60 font-medium">Subtotal</span>
                     <span className="font-bold">₹{total.toLocaleString("en-IN")}</span>
                   </div>
                   <div className="flex justify-between items-center text-sm">
-                    <span className="opacity-50 font-medium">Estimated Tax (18%)</span>
+                    <span className="opacity-60 font-medium">Estimated Tax (18%)</span>
                     <span className="font-bold">₹{tax.toLocaleString("en-IN")}</span>
                   </div>
                   {appliedCoupon && (
-                    <div className="flex justify-between items-center text-sm text-(--gold-dust)">
+                    <div className="flex justify-between items-center text-sm text-(--accent-crimson)">
                       <span className="font-medium">Discount Applied</span>
                       <span className="font-bold">− ₹{discountAmount.toLocaleString("en-IN")}</span>
                     </div>
                   )}
                   <div className="flex justify-between items-center text-sm">
-                    <span className="opacity-50 font-medium">Shipping</span>
-                    <span className="font-bold uppercase tracking-widest text-[10px] bg-white/10 px-3 py-1 rounded-full">Complimentary</span>
+                    <span className="opacity-60 font-medium">Shipping</span>
+                    <span className="font-bold uppercase tracking-widest text-[10px] bg-black/5 px-3 py-1 rounded-full">Complimentary</span>
                   </div>
                   
-                  <div className="pt-8 mt-4 border-t border-white/10 flex flex-col gap-1">
+                  <div className="pt-8 mt-4 border-t border-black/10 flex flex-col gap-1">
                     <div className="flex justify-between items-center">
-                      <span className="text-sm font-bold uppercase tracking-widest opacity-60">Total Value</span>
+                      <span className="text-sm font-black uppercase tracking-widest opacity-40">Total Value</span>
                       <span className="text-3xl font-bold tracking-tighter">
                         ₹{finalTotal.toLocaleString("en-IN")}
                       </span>
                     </div>
-                    <p className="text-[10px] opacity-40 uppercase tracking-tighter">All taxes and duties included</p>
+                    <p className="text-[10px] opacity-40 uppercase tracking-tighter font-medium">All taxes and duties included</p>
                   </div>
                 </div>
 
                 <button
                   onClick={() => navigate('/address')}
-                  className="mt-10 w-full bg-white text-(--midnight) py-5 rounded-2xl text-[11px] font-black uppercase tracking-[0.2em] transition-all hover:bg-(--silver-mist) active:scale-[0.98] shadow-lg shadow-black/10"
+                  className="mt-10 w-full bg-black text-white py-5 rounded-2xl text-[11px] font-black uppercase tracking-[0.2em] transition-all hover:bg-(--staky-green) active:scale-[0.98] shadow-lg shadow-black/10"
                 >
                   Proceed to Logistics
                 </button>

@@ -1,9 +1,9 @@
-const Order = require("../models/order");
-const User = require("../models/user");
-const Product = require("../models/poduct");
-const Review = require("../models/review");
+import Order from "../models/order.js";
+import User from "../models/user.js";
+import Product from "../models/product.js";
+import Review from "../models/review.js";
 
-const handelGetDashboardStats = async (req, res) => {
+export const handelGetDashboardStats = async (req, res) => {
   try {
     // Total users
     const totalUsers = await User.countDocuments({ role: "user" });
@@ -65,7 +65,7 @@ const handelGetDashboardStats = async (req, res) => {
   }
 };
 
-const handelGetSalesData = async (req, res) => {
+export const handelGetSalesData = async (req, res) => {
   try {
     // Sales by month
     const salesByMonth = await Order.aggregate([
@@ -112,9 +112,4 @@ const handelGetSalesData = async (req, res) => {
   } catch (error) {
     res.status(500).json({ message: "Internal server error", error: error.message });
   }
-};
-
-module.exports = {
-  handelGetDashboardStats,
-  handelGetSalesData,
 };

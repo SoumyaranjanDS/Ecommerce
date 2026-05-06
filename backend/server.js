@@ -1,27 +1,30 @@
-const path = require("path");
-const dotenv = require("dotenv");
+import path from "path";
+import { fileURLToPath } from "url";
+import dotenv from "dotenv";
+import express from "express";
+import cors from "cors";
+import cookieParser from "cookie-parser";
+import connectDB from "./config/db.js";
+import authRoutes from "./routes/authRoutes.js";
+import productRoutes from "./routes/productRoutes.js";
+import cartRoutes from "./routes/cartRoutes.js";
+import addressRoutes from "./routes/addressRoutes.js";
+import orderRoutes from "./routes/orderRoutes.js";
+import reviewRoutes from "./routes/reviewRoutes.js";
+import userRoutes from "./routes/userRoutes.js";
+import couponRoutes from "./routes/couponRoutes.js";
+import dashboardRoutes from "./routes/dashboardRoutes.js";
+import wishlistRoutes from "./routes/wishlistRoutes.js";
+import { startAbandonedCartRecovery } from "./utils/abandonedCartRecovery.js";
+import helmet from "helmet";
+import rateLimit from "express-rate-limit";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 dotenv.config({ path: path.join(__dirname, ".env") });
 
-const express = require("express");
-const cors = require("cors");
-const cookieParser = require("cookie-parser");
-const connectDB = require("./config/db");
 const PORT = process.env.PORT || 8000;
-
-const authRoutes = require("./routes/authRoutes");
-const productRoutes = require("./routes/productRoutes");
-const cartRoutes = require("./routes/cartRoutes");
-const addressRoutes = require("./routes/addressRoutes");
-const orderRoutes = require("./routes/orderRoutes");
-const reviewRoutes = require("./routes/reviewRoutes");
-const userRoutes = require("./routes/userRoutes");
-const couponRoutes = require("./routes/couponRoutes");
-const dashboardRoutes = require("./routes/dashboardRoutes");
-const wishlistRoutes = require("./routes/wishlistRoutes");
-const { startAbandonedCartRecovery } = require("./utils/abandonedCartRecovery");
-const helmet = require("helmet");
-const rateLimit = require("express-rate-limit");
 
 const app = express();
 

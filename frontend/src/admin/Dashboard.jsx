@@ -1,6 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../api/axios";
+import { 
+  AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, 
+  BarChart, Bar, Cell, PieChart, Pie
+} from 'recharts';
+import { motion } from "framer-motion";
 
 const AdminDashboard = () => {
   const [stats, setStats] = useState(null);
@@ -13,6 +18,12 @@ const AdminDashboard = () => {
   const [newStatus, setNewStatus] = useState("");
   const [orderFilter, setOrderFilter] = useState("");
   const [error, setError] = useState("");
+  
+  // Pagination State
+  const [orderPage, setOrderPage] = useState(1);
+  const [orderTotalPages, setOrderTotalPages] = useState(1);
+  const [userPage, setUserPage] = useState(1);
+  const [userTotalPages, setUserTotalPages] = useState(1);
   const navigate = useNavigate();
 
   const userRole = localStorage.getItem("userRole");
@@ -27,22 +38,41 @@ const AdminDashboard = () => {
 
   const fetchDashboardData = async () => {
     try {
-      const [statsRes, salesRes, ordersRes, usersRes] = await Promise.all([
+      setLoading(true);
+      const [statsRes, salesRes] = await Promise.all([
         api.get("/admin/dashboard/stats"),
         api.get("/admin/dashboard/sales"),
-        api.get("/order/all"),
-        api.get("/user/profile"),
       ]);
-
       setStats(statsRes.data);
       setSalesData(salesRes.data);
-      setOrders(ordersRes.data || []);
-      setUsers(usersRes.data?.users || []);
+      await Promise.all([fetchOrders(1), fetchUsers(1)]);
     } catch (err) {
       console.error("Failed to fetch dashboard data:", err);
       setError("Strategic data retrieval failure.");
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchOrders = async (pageNum = 1) => {
+    try {
+      const res = await api.get(`/order/all?page=${pageNum}&limit=10`);
+      setOrders(res.data.orders || []);
+      setOrderTotalPages(res.data.pages || 1);
+      setOrderPage(pageNum);
+    } catch (err) {
+      console.error("Failed to fetch orders");
+    }
+  };
+
+  const fetchUsers = async (pageNum = 1) => {
+    try {
+      const res = await api.get(`/user/profile?page=${pageNum}&limit=12`);
+      setUsers(res.data.users || []);
+      setUserTotalPages(res.data.pages || 1);
+      setUserPage(pageNum);
+    } catch (err) {
+      console.error("Failed to fetch users");
     }
   };
 
@@ -164,27 +194,51 @@ const AdminDashboard = () => {
               <div className="bg-white border border-(--color-border-tertiary) rounded-[40px] p-10 shadow-sm">
                 <div className="flex items-center justify-between mb-12">
                   <h2 className="text-lg font-bold text-(--midnight)">Revenue Analytics</h2>
-                  <p className="text-[10px] font-bold text-(--color-text-tertiary) uppercase tracking-widest">Last 12 Segments</p>
+                  <p className="text-[10px] font-bold text-(--color-text-tertiary) uppercase tracking-widest">Growth Vector</p>
                 </div>
-                <div className="flex h-72 items-end gap-3 px-4">
-                  {salesData?.salesByMonth?.map((month, i) => {
-                    const maxSales = Math.max(...salesData.salesByMonth.map(m => m.totalSales)) || 1;
-                    const height = (month.totalSales / maxSales) * 100;
-                    return (
-                      <div key={i} className="group relative flex-1">
-                        <div 
-                          className="w-full rounded-t-xl bg-(--midnight) opacity-10 transition-all group-hover:opacity-100 group-hover:scale-x-110"
-                          style={{ height: `${Math.max(height, 2)}%` }}
-                        ></div>
-                        <div className="absolute -top-12 left-1/2 -translate-x-1/2 scale-0 rounded-lg bg-(--midnight) text-white px-3 py-2 text-[10px] font-bold transition-all group-hover:scale-100 whitespace-nowrap z-10 shadow-xl">
-                          ₹{month.totalSales.toLocaleString()}
-                        </div>
-                        <p className="mt-4 text-center text-[9px] font-bold text-(--color-text-tertiary) uppercase tracking-tighter">
-                          {new Date(0, month._id.month - 1).toLocaleString('default', { month: 'short' })}
-                        </p>
-                      </div>
-                    );
-                  })}
+                <div className="h-80 w-full">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <AreaChart
+                      data={salesData?.salesByMonth?.map(month => ({
+                        name: new Date(0, month._id.month - 1).toLocaleString('default', { month: 'short' }),
+                        revenue: month.totalSales
+                      }))}
+                      margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
+                    >
+                      <defs>
+                        <linearGradient id="colorRevenue" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="5%" stopColor="#000000" stopOpacity={0.1}/>
+                          <stop offset="95%" stopColor="#000000" stopOpacity={0}/>
+                        </linearGradient>
+                      </defs>
+                      <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f0f0" />
+                      <XAxis 
+                        dataKey="name" 
+                        axisLine={false} 
+                        tickLine={false} 
+                        tick={{fontSize: 9, fontWeight: 700, fill: '#999'}} 
+                        dy={15}
+                      />
+                      <YAxis 
+                        axisLine={false} 
+                        tickLine={false} 
+                        tick={{fontSize: 9, fontWeight: 700, fill: '#999'}}
+                        tickFormatter={(value) => `₹${value.toLocaleString()}`}
+                      />
+                      <Tooltip 
+                        contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 10px 30px rgba(0,0,0,0.1)', fontSize: '11px', fontWeight: 'bold' }}
+                      />
+                      <Area 
+                        type="monotone" 
+                        dataKey="revenue" 
+                        stroke="#000" 
+                        strokeWidth={3}
+                        fillOpacity={1} 
+                        fill="url(#colorRevenue)" 
+                        animationDuration={2000}
+                      />
+                    </AreaChart>
+                  </ResponsiveContainer>
                 </div>
               </div>
 
@@ -283,53 +337,121 @@ const AdminDashboard = () => {
                 ))
               )}
             </div>
+            
+            {/* Order Pagination */}
+            {orderTotalPages > 1 && (
+              <div className="mt-12 flex items-center justify-center gap-4">
+                <button
+                  onClick={() => fetchOrders(orderPage - 1)}
+                  disabled={orderPage === 1}
+                  className="px-6 py-2 border border-(--color-border-tertiary) rounded-xl text-[10px] font-black uppercase tracking-widest disabled:opacity-20 hover:border-(--midnight) transition-all"
+                >
+                  Prev
+                </button>
+                <div className="flex gap-2">
+                  {Array.from({ length: orderTotalPages }, (_, i) => i + 1).map((p) => (
+                    <button
+                      key={p}
+                      onClick={() => fetchOrders(p)}
+                      className={`h-10 w-10 flex items-center justify-center rounded-xl text-[10px] font-black transition-all ${
+                        orderPage === p ? "bg-(--midnight) text-white" : "text-(--color-text-tertiary) hover:text-(--midnight)"
+                      }`}
+                    >
+                      {p}
+                    </button>
+                  ))}
+                </div>
+                <button
+                  onClick={() => fetchOrders(orderPage + 1)}
+                  disabled={orderPage === orderTotalPages}
+                  className="px-6 py-2 border border-(--color-border-tertiary) rounded-xl text-[10px] font-black uppercase tracking-widest disabled:opacity-20 hover:border-(--midnight) transition-all"
+                >
+                  Next
+                </button>
+              </div>
+            )}
           </div>
         )}
 
         {/* Users Tab */}
         {activeTab === "users" && (
-          <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3 animate-fadeIn">
-            {users.length === 0 ? (
-              <div className="col-span-full bg-white border border-dashed border-(--color-border-tertiary) rounded-[40px] py-32 text-center">
-                <p className="text-sm font-medium text-(--color-text-tertiary)">No profile registries identified.</p>
-              </div>
-            ) : (
-              users.map((user) => (
-                <div
-                  key={user._id}
-                  className="bg-white border border-(--color-border-tertiary) rounded-3xl p-10 shadow-sm hover:shadow-xl hover:shadow-black/5 transition-all group"
-                >
-                  <div className="flex items-start justify-between mb-8">
-                    <div className="h-16 w-16 rounded-2xl bg-(--color-background-secondary) border border-(--color-border-tertiary) flex items-center justify-center text-2xl font-bold text-(--midnight) group-hover:bg-(--midnight) group-hover:text-white transition-all duration-500">
-                      {user.name.charAt(0)}
-                    </div>
-                    <span className={`px-3 py-1 rounded-full text-[8px] font-black uppercase tracking-widest ${user.role === 'admin' ? 'bg-purple-50 text-purple-600' : 'bg-gray-50 text-gray-500'}`}>
-                      {user.role}
-                    </span>
-                  </div>
-                  
-                  <div className="mb-10">
-                    <p className="text-lg font-bold text-(--midnight) truncate">{user.name}</p>
-                    <p className="text-xs font-medium text-(--color-text-tertiary) truncate mt-1">{user.email}</p>
-                    <p className="mt-4 text-[9px] font-black text-(--color-text-tertiary) uppercase tracking-widest">Registered {new Date(user.createdAt).toLocaleDateString("en-GB")}</p>
-                  </div>
-
-                  <div className="flex gap-4">
-                    <button 
-                      onClick={() => handleToggleRole(user._id, user.role)}
-                      className="flex-1 h-12 bg-(--color-background-secondary) text-(--midnight) rounded-xl text-[9px] font-black uppercase tracking-widest transition-all hover:bg-(--midnight) hover:text-white"
-                    >
-                      Auth Swap
-                    </button>
-                    <button 
-                      onClick={() => handleDeleteUser(user._id)}
-                      className="h-12 w-12 flex items-center justify-center bg-red-50 text-red-600 rounded-xl hover:bg-red-600 hover:text-white transition-all"
-                    >
-                      ✕
-                    </button>
-                  </div>
+          <div className="space-y-10 animate-fadeIn">
+            <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+              {users.length === 0 ? (
+                <div className="col-span-full bg-white border border-dashed border-(--color-border-tertiary) rounded-[40px] py-32 text-center">
+                  <p className="text-sm font-medium text-(--color-text-tertiary)">No profile registries identified.</p>
                 </div>
-              ))
+              ) : (
+                users.map((user) => (
+                  <div
+                    key={user._id}
+                    className="bg-white border border-(--color-border-tertiary) rounded-3xl p-10 shadow-sm hover:shadow-xl hover:shadow-black/5 transition-all group"
+                  >
+                    <div className="flex items-start justify-between mb-8">
+                      <div className="h-16 w-16 rounded-2xl bg-(--color-background-secondary) border border-(--color-border-tertiary) flex items-center justify-center text-2xl font-bold text-(--midnight) group-hover:bg-(--midnight) group-hover:text-white transition-all duration-500">
+                        {user.name.charAt(0)}
+                      </div>
+                      <span className={`px-3 py-1 rounded-full text-[8px] font-black uppercase tracking-widest ${user.role === 'admin' ? 'bg-purple-50 text-purple-600' : 'bg-gray-50 text-gray-500'}`}>
+                        {user.role}
+                      </span>
+                    </div>
+                    
+                    <div className="mb-10">
+                      <p className="text-lg font-bold text-(--midnight) truncate">{user.name}</p>
+                      <p className="text-xs font-medium text-(--color-text-tertiary) truncate mt-1">{user.email}</p>
+                      <p className="mt-4 text-[9px] font-black text-(--color-text-tertiary) uppercase tracking-widest">Registered {new Date(user.createdAt).toLocaleDateString("en-GB")}</p>
+                    </div>
+
+                    <div className="flex gap-4">
+                      <button 
+                        onClick={() => handleToggleRole(user._id, user.role)}
+                        className="flex-1 h-12 bg-(--color-background-secondary) text-(--midnight) rounded-xl text-[9px] font-black uppercase tracking-widest transition-all hover:bg-(--midnight) hover:text-white"
+                      >
+                        Auth Swap
+                      </button>
+                      <button 
+                        onClick={() => handleDeleteUser(user._id)}
+                        className="h-12 w-12 flex items-center justify-center bg-red-50 text-red-600 rounded-xl hover:bg-red-600 hover:text-white transition-all"
+                      >
+                        ✕
+                      </button>
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
+            
+            {/* User Pagination */}
+            {userTotalPages > 1 && (
+              <div className="mt-12 flex items-center justify-center gap-4">
+                <button
+                  onClick={() => fetchUsers(userPage - 1)}
+                  disabled={userPage === 1}
+                  className="px-6 py-2 border border-(--color-border-tertiary) rounded-xl text-[10px] font-black uppercase tracking-widest disabled:opacity-20 hover:border-(--midnight) transition-all"
+                >
+                  Prev
+                </button>
+                <div className="flex gap-2">
+                  {Array.from({ length: userTotalPages }, (_, i) => i + 1).map((p) => (
+                    <button
+                      key={p}
+                      onClick={() => fetchUsers(p)}
+                      className={`h-10 w-10 flex items-center justify-center rounded-xl text-[10px] font-black transition-all ${
+                        userPage === p ? "bg-(--midnight) text-white" : "text-(--color-text-tertiary) hover:text-(--midnight)"
+                      }`}
+                    >
+                      {p}
+                    </button>
+                  ))}
+                </div>
+                <button
+                  onClick={() => fetchUsers(userPage + 1)}
+                  disabled={userPage === userTotalPages}
+                  className="px-6 py-2 border border-(--color-border-tertiary) rounded-xl text-[10px] font-black uppercase tracking-widest disabled:opacity-20 hover:border-(--midnight) transition-all"
+                >
+                  Next
+                </button>
+              </div>
             )}
           </div>
         )}

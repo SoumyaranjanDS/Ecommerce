@@ -1,12 +1,12 @@
-const express = require("express");
-const {
+import express from "express";
+import {
   handelCreateCoupon,
   handelValidateCoupon,
   handelUseCoupon,
   handelGetAllCoupons,
   handelDeleteCoupon,
-} = require("../controllers/couponController");
-const { verifyToken, verifyAdmin } = require("../middleware/auth");
+} from "../controllers/couponController.js";
+import { verifyToken, verifyAdmin } from "../middleware/auth.js";
 
 const router = express.Router();
 
@@ -25,4 +25,4 @@ router.get("/", verifyToken, verifyAdmin, handelGetAllCoupons);
 // Delete coupon (admin only)
 router.delete("/:couponId", verifyToken, verifyAdmin, handelDeleteCoupon);
 
-module.exports = router;
+export default router;

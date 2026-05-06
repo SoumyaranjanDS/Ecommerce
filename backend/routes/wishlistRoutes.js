@@ -1,10 +1,10 @@
-const express = require("express");
-const {
+import express from "express";
+import {
   handelAddToWishlist,
   handelRemoveFromWishlist,
   handelGetWishlist,
-} = require("../controllers/wishlistController");
-const { verifyToken } = require("../middleware/auth");
+} from "../controllers/wishlistController.js";
+import { verifyToken } from "../middleware/auth.js";
 
 const router = express.Router();
 
@@ -12,4 +12,4 @@ router.get("/", verifyToken, handelGetWishlist);
 router.post("/add", verifyToken, handelAddToWishlist);
 router.delete("/remove/:productId", verifyToken, handelRemoveFromWishlist);
 
-module.exports = router;
+export default router;

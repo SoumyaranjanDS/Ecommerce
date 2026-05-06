@@ -1,15 +1,15 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
 
 const addressSchema = new mongoose.Schema(
   {
-    userid: {
+    userId: {
       type: mongoose.Schema.Types.ObjectId,
       required: true,
       ref: "User",
     },
     fullname: String,
     phone: String,
-    adressLine: String,
+    addressLine: String,
     city: String,
     state: String,
     pincode: String,
@@ -19,4 +19,4 @@ const addressSchema = new mongoose.Schema(
 
 const Address = mongoose.model("Address", addressSchema);
 
-module.exports = Address;
+export default Address;
