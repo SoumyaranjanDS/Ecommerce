@@ -267,8 +267,8 @@ const Home = () => {
 
       {/* Categories Bar */}
       <section className="sticky top-16 sm:top-20 z-40 bg-white/95 backdrop-blur-md border-b border-gray-100 mb-4 shadow-sm">
-        <div className="mx-auto max-w-7xl px-4 py-3">
-          <div className="flex items-center overflow-x-auto gap-4 no-scrollbar">
+        <div className="mx-auto max-w-7xl px-2 sm:px-4 py-3">
+          <div className="flex items-center overflow-x-auto gap-4 no-scrollbar px-1 sm:px-0">
             {categoriesWithIcons.map((cat) => {
               const IconComponent = cat.icon;
               const isActive = category === cat.label || (category === "" && cat.label === "All Items");
@@ -283,7 +283,7 @@ const Home = () => {
                   }`}>
                     <IconComponent size={20} />
                   </div>
-                  <span className={`text-[10px] font-bold whitespace-nowrap ${
+                  <span className={`text-[10px] sm:text-xs font-bold whitespace-nowrap ${
                     isActive ? "text-green-600" : "text-gray-600"
                   }`}>{cat.label}</span>
                 </button>
@@ -296,7 +296,7 @@ const Home = () => {
       <div className="mx-auto max-w-7xl px-2 sm:px-4 py-4 space-y-6">
         
         {/* Banner */}
-        <section className="relative h-[200px] sm:h-[400px] overflow-hidden shadow-2xl rounded-lg group">
+        <section className="relative h-[180px] sm:h-[320px] md:h-[400px] overflow-hidden shadow-2xl rounded-lg group">
           {banners.map((banner, index) => (
             <div
               key={index}
@@ -305,10 +305,10 @@ const Home = () => {
               }`}
             >
               <img src={banner.image} alt={banner.title} className="h-full w-full object-cover brightness-90 group-hover:brightness-100 transition-all" />
-              <div className="absolute inset-0 bg-gradient-to-r from-black/40 to-transparent flex items-center px-8 sm:px-20">
-                <div className={`hidden sm:block text-white ${currentBanner === index ? "opacity-100" : "opacity-0"}`}>
-                  <h2 className="text-4xl lg:text-6xl font-black mb-4">{banner.title}</h2>
-                  <p className="text-lg opacity-80">{banner.subtitle}</p>
+              <div className="absolute inset-0 bg-gradient-to-r from-black/40 to-transparent flex items-center px-4 sm:px-8 md:px-20">
+                <div className={`text-white transition-opacity duration-500 ${currentBanner === index ? "opacity-100" : "opacity-0"}`}>
+                  <h2 className="text-2xl sm:text-4xl lg:text-6xl font-black mb-2 sm:mb-4">{banner.title}</h2>
+                  <p className="text-sm sm:text-lg opacity-80">{banner.subtitle}</p>
                 </div>
               </div>
             </div>
@@ -325,7 +325,7 @@ const Home = () => {
         </section>
 
         {/* Trust Signals */}
-        <section className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        <section className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-4 gap-4">
           {trustSignals.map((signal, idx) => {
             const Icon = signal.icon;
             return (
@@ -375,23 +375,23 @@ const Home = () => {
         )}
 
         {/* Newsletter */}
-        <section className="bg-gradient-to-r from-green-600 to-green-700 text-white p-8 rounded-lg shadow-xl">
+        <section className="bg-gradient-to-r from-green-600 to-green-700 text-white p-6 sm:p-8 rounded-lg shadow-xl">
           <div className="max-w-2xl mx-auto text-center">
-            <h2 className="text-3xl font-black mb-2">Get Exclusive Deals</h2>
-            <p className="text-green-100 mb-6">Subscribe to our newsletter and get 10% off your first purchase!</p>
-            <form onSubmit={handleNewsletterSignup} className="flex gap-2">
+            <h2 className="text-2xl sm:text-3xl font-black mb-2">Get Exclusive Deals</h2>
+            <p className="text-green-100 mb-4 sm:mb-6 text-sm sm:text-base">Subscribe to our newsletter and get 10% off your first purchase!</p>
+            <form onSubmit={handleNewsletterSignup} className="flex flex-col sm:flex-row gap-3">
               <input
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="Enter your email"
-                className="flex-1 px-6 py-3 rounded-lg text-gray-900 font-bold focus:outline-none"
+                className="w-full sm:flex-1 px-4 py-3 rounded-lg text-gray-900 font-bold focus:outline-none"
                 required
               />
               <button
                 type="submit"
                 disabled={newsletterLoading}
-                className="px-8 py-3 bg-yellow-400 text-green-700 font-black rounded-lg hover:bg-yellow-500"
+                className="w-full sm:w-auto px-6 py-3 bg-yellow-400 text-green-700 font-black rounded-lg hover:bg-yellow-500"
               >
                 Subscribe
               </button>
@@ -412,14 +412,14 @@ const Home = () => {
             <div className="flex gap-3 w-full sm:w-auto">
               <button
                 onClick={() => setShowFilters(!showFilters)}
-                className="flex-1 sm:flex-none px-4 py-2 border border-gray-300 rounded-lg font-bold text-sm"
+                className="w-full sm:w-auto px-4 py-2 border border-gray-300 rounded-lg font-bold text-sm"
               >
                 🔍 Filters
               </button>
               <select
                 value={sort}
                 onChange={(e) => setSort(e.target.value)}
-                className="flex-1 sm:flex-none px-4 py-2 border border-gray-300 rounded-lg font-bold bg-white text-sm"
+                className="w-full sm:w-auto px-4 py-2 border border-gray-300 rounded-lg font-bold bg-white text-sm"
               >
                 <option value="newest">Newest</option>
                 <option value="price-low">Price: Low to High</option>
@@ -432,7 +432,7 @@ const Home = () => {
 
           {/* Filters */}
           {showFilters && (
-            <div className="mb-6 p-6 bg-gray-50 rounded-lg space-y-4">
+            <div className="mb-6 p-4 sm:p-6 bg-gray-50 rounded-lg space-y-4">
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div>
                   <label className="block text-sm font-bold mb-2">Min Price</label>
@@ -441,7 +441,7 @@ const Home = () => {
                     placeholder="₹0"
                     value={minPrice}
                     onChange={(e) => setMinPrice(e.target.value)}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg text-sm"
+                    className="w-full px-3 py-2 sm:px-4 sm:py-2 border border-gray-300 rounded-lg text-sm"
                   />
                 </div>
                 <div>
@@ -451,7 +451,7 @@ const Home = () => {
                     placeholder="₹100000"
                     value={maxPrice}
                     onChange={(e) => setMaxPrice(e.target.value)}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg text-sm"
+                    className="w-full px-3 py-2 sm:px-4 sm:py-2 border border-gray-300 rounded-lg text-sm"
                   />
                 </div>
                 <div>
@@ -459,7 +459,7 @@ const Home = () => {
                   <select
                     value={rating}
                     onChange={(e) => setRating(e.target.value)}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg text-sm bg-white"
+                    className="w-full px-3 py-2 sm:px-4 sm:py-2 border border-gray-300 rounded-lg text-sm bg-white"
                   >
                     <option value="">All Ratings</option>
                     <option value="4">4★ & above</option>
@@ -467,16 +467,24 @@ const Home = () => {
                   </select>
                 </div>
               </div>
-              <button
-                onClick={() => {
-                  setMinPrice("");
-                  setMaxPrice("");
-                  setRating("");
-                }}
-                className="w-full px-4 py-2 bg-gray-300 text-gray-900 font-bold rounded-lg text-sm"
-              >
-                Clear Filters
-              </button>
+              <div className="flex gap-3">
+                <button
+                  onClick={() => {
+                    setMinPrice("");
+                    setMaxPrice("");
+                    setRating("");
+                  }}
+                  className="flex-1 px-4 py-2 bg-gray-300 text-gray-900 font-bold rounded-lg text-sm"
+                >
+                  Clear Filters
+                </button>
+                <button
+                  onClick={() => { setShowFilters(false); }}
+                  className="flex-1 px-4 py-2 bg-green-600 text-white font-bold rounded-lg text-sm"
+                >
+                  Apply
+                </button>
+              </div>
             </div>
           )}
 
