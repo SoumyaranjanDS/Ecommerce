@@ -268,27 +268,29 @@ const Home = () => {
       {/* Categories Bar */}
       <section className="sticky top-16 sm:top-20 z-40 bg-white/95 backdrop-blur-md border-b border-gray-100 mb-4 shadow-sm">
         <div className="mx-auto max-w-7xl px-2 sm:px-4 py-3">
-          <div className="flex items-center overflow-x-auto gap-4 no-scrollbar px-1 sm:px-0">
-            {categoriesWithIcons.map((cat) => {
-              const IconComponent = cat.icon;
-              const isActive = category === cat.label || (category === "" && cat.label === "All Items");
-              return (
-                <button
-                  key={cat.label}
-                  onClick={() => setCategory(cat.label === "All Items" ? "" : cat.label)}
-                  className="flex flex-col items-center gap-1 shrink-0 transition-all group"
-                >
-                  <div className={`p-2 rounded-full transition-all ${
-                    isActive ? "bg-green-600 text-white shadow-lg" : "bg-gray-100 text-gray-600 group-hover:bg-green-100"
-                  }`}>
-                    <IconComponent size={20} />
-                  </div>
-                  <span className={`text-[10px] sm:text-xs font-bold whitespace-nowrap ${
-                    isActive ? "text-green-600" : "text-gray-600"
-                  }`}>{cat.label}</span>
-                </button>
-              );
-            })}
+          <div className="w-full">
+            <div className="grid grid-cols-3 sm:grid-cols-7 gap-3 items-center w-full">
+              {categoriesWithIcons.map((cat) => {
+                const IconComponent = cat.icon;
+                const isActive = category === cat.label || (category === "" && cat.label === "All Items");
+                return (
+                  <button
+                    key={cat.label}
+                    onClick={() => setCategory(cat.label === "All Items" ? "" : cat.label)}
+                    className="flex flex-col items-center gap-2 transition-all group py-3 px-2 w-full"
+                  >
+                    <div className={`p-3 rounded-full transition-all w-12 h-12 flex items-center justify-center ${
+                      isActive ? "bg-green-600 text-white shadow-lg" : "bg-gray-100 text-gray-600 group-hover:bg-green-100"
+                    }`}>
+                      <IconComponent size={20} />
+                    </div>
+                    <span className={`text-xs sm:text-sm font-bold text-center ${
+                      isActive ? "text-green-600" : "text-gray-600"
+                    }`}>{cat.label}</span>
+                  </button>
+                );
+              })}
+            </div>
           </div>
         </div>
       </section>
