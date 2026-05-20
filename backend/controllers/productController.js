@@ -15,7 +15,7 @@ export const handelCreateProduct = async (req, res) => {
 
 export const handelGetAllProducts = async (req, res) => {
   try {
-    const { search, category, limit = 10, page = 1 } = req.query;
+    const { search, category, limit = 10, page = 1, sort = "newest", minPrice, maxPrice, rating } = req.query;
     let query = {};
 
     if (search) {
@@ -24,11 +24,25 @@ export const handelGetAllProducts = async (req, res) => {
     if (category) {
       query.category = category;
     }
+    if (minPrice || maxPrice) {
+      query.price = {};
+      if (minPrice) query.price.$gte = Number(minPrice);
+      if (maxPrice) query.price.$lte = Number(maxPrice);
+    }
+    if (rating) {
+      query.rating = { $gte: Number(rating) };
+    }
+
+    let sortOption = { createdAt: -1 };
+    if (sort === "price-low") sortOption = { price: 1 };
+    else if (sort === "price-high") sortOption = { price: -1 };
+    else if (sort === "rating") sortOption = { rating: -1, totalRatings: -1 };
+    else if (sort === "popular") sortOption = { totalRatings: -1, rating: -1 };
 
     const skip = (page - 1) * limit;
     
     const products = await Product.find(query)
-      .sort({ createdAt: -1 })
+      .sort(sortOption)
       .limit(Number(limit))
       .skip(Number(skip));
 
