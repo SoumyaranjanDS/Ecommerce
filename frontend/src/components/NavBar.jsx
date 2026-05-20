@@ -7,6 +7,7 @@ const NavBar = () => {
   const navigate = useNavigate();
   const [cartCount, setCartCount] = useState(0);
   const [isCartOpen, setIsCartOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
   const userId = localStorage.getItem("userId");
   const role = localStorage.getItem("role");
 
@@ -42,6 +43,20 @@ const NavBar = () => {
   }, [userId]);
 
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  const handleSearch = () => {
+    if (searchQuery.trim()) {
+      navigate(`/search?q=${encodeURIComponent(searchQuery)}`);
+      setSearchQuery("");
+      setIsMenuOpen(false);
+    }
+  };
+
+  const handleSearchKeyPress = (e) => {
+    if (e.key === "Enter") {
+      handleSearch();
+    }
+  };
 
   useEffect(() => {
     if (isMenuOpen || isCartOpen) {
@@ -90,9 +105,15 @@ const NavBar = () => {
                 <input
                   type="text"
                   placeholder="Search for products, brands and more"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  onKeyPress={handleSearchKeyPress}
                   className="w-full bg-white/95 text-sm py-2.5 px-5 rounded-sm focus:outline-none shadow-lg focus:bg-white transition-all duration-500 border border-transparent focus:border-white/20 focus:ring-4 focus:ring-white/10"
                 />
-                <button className="absolute right-0 top-0 bottom-0 px-5 text-(--staky-green) hover:bg-gray-50 transition-all duration-300 rounded-r-sm group-focus-within:bg-gray-100">
+                <button 
+                  onClick={handleSearch}
+                  className="absolute right-0 top-0 bottom-0 px-5 text-(--staky-green) hover:bg-gray-50 transition-all duration-300 rounded-r-sm group-focus-within:bg-gray-100"
+                >
                   <svg className="w-5 h-5 transition-transform duration-300 group-hover:scale-110" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                   </svg>
@@ -184,9 +205,15 @@ const NavBar = () => {
               <input
                 type="text"
                 placeholder="Search products..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                onKeyPress={handleSearchKeyPress}
                 className="w-full bg-white/95 text-sm py-2.5 px-4 rounded-sm focus:outline-none shadow-xl transition-all duration-300 border border-transparent focus:border-white/20"
               />
-              <button className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 active:scale-90 transition-transform">
+              <button 
+                onClick={handleSearch}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 active:scale-90 transition-transform"
+              >
                 <svg className="w-5.5 h-5.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                 </svg>

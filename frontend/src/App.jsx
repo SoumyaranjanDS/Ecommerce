@@ -17,6 +17,7 @@ const OrderDetails = lazy(() => import("./pages/OrderDetails"));
 const Cart = lazy(() => import("./pages/Cart"));
 const Address = lazy(() => import("./pages/Address"));
 const Payment = lazy(() => import("./pages/Payment"));
+const SearchResults = lazy(() => import("./pages/SearchResults"));
 
 // Admin Lazy Pages
 const Dashboard = lazy(() => import("./admin/Dashboard"));
@@ -48,6 +49,10 @@ const router = createBrowserRouter([
       {
         path: "/",
         element: <Home />,
+      },
+      {
+        path: "/search",
+        element: <SearchResults />,
       },
       {
         path: "/login",
