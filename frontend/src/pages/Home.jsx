@@ -269,7 +269,8 @@ const Home = () => {
       <section className="sticky top-16 sm:top-20 z-40 bg-white/95 backdrop-blur-md border-b border-gray-100 mb-4 shadow-sm">
         <div className="mx-auto max-w-7xl px-2 sm:px-4 py-3">
           <div className="w-full">
-            <div className="grid grid-cols-3 sm:grid-cols-7 gap-3 items-center w-full">
+            {/* Mobile: horizontal scroll; Desktop (sm+): grid spanning full width */}
+            <div className="flex gap-3 overflow-x-auto no-scrollbar sm:grid sm:grid-cols-7 items-center w-full px-1 sm:px-0">
               {categoriesWithIcons.map((cat) => {
                 const IconComponent = cat.icon;
                 const isActive = category === cat.label || (category === "" && cat.label === "All Items");
@@ -277,7 +278,7 @@ const Home = () => {
                   <button
                     key={cat.label}
                     onClick={() => setCategory(cat.label === "All Items" ? "" : cat.label)}
-                    className="flex flex-col items-center gap-2 transition-all group py-3 px-2 w-full"
+                    className="flex flex-col items-center gap-2 transition-all group py-3 px-3 sm:px-2 shrink-0 sm:shrink sm:w-full"
                   >
                     <div className={`p-3 rounded-full transition-all w-12 h-12 flex items-center justify-center ${
                       isActive ? "bg-green-600 text-white shadow-lg" : "bg-gray-100 text-gray-600 group-hover:bg-green-100"
